@@ -37,6 +37,9 @@ import ch.ivyteam.util.StringUtil;
 
 class ProcessWriter {
 
+  static final int GRID_X = 128;
+  static final int GRID_Y = 96;
+
   private final IProject project;
 
   ProcessWriter(IProject project) {
@@ -46,10 +49,9 @@ class ProcessWriter {
   void drawElements(List<ExpressTaskDefinition> tasks, Diagram execDiagram, String processname,
           String dataclassName, List<VariableDesc> dataFields, IProjectProcessManager manager)
   {
-    int x = 96;
-    int y = 0;
+    int x = GRID_X;
+    int y = GRID_Y;
 
-    y += 128;
     DiagramShape start = execDiagram.add().shape(RequestStart.class).at(x, y);
     start.getLabel().setText("start" + processname + ".ivp");
     RequestStart starter = start.getElement();
@@ -59,29 +61,29 @@ class ProcessWriter {
     boolean isfirstTask = true;
     for (ExpressTaskDefinition taskdef : tasks)
     {
-      x += ExpressWorkflowConverter.GRID_X;
+      x += GRID_X;
 
       if (taskdef.getResponsibles().size() > 1)
       {
         DiagramShape split = execDiagram.add().shape(TaskSwitchGateway.class).at(x, y);
         split.getLabel().setText("split");
         previous.edges().connectTo(split); // connect
-        x += ExpressWorkflowConverter.GRID_X;
+        x += GRID_X;
 
-        DiagramShape current = execDiagram.add().shape(UserTask.class).at(x, y - ExpressWorkflowConverter.GRID_Y / 2);
+        DiagramShape current = execDiagram.add().shape(UserTask.class).at(x, y - GRID_Y / 2);
         createUserTask(taskdef, current, dataclassName, isfirstTask, 0);
         isfirstTask = false;
         split.edges().connectTo(current); // connect
 
-        x += ExpressWorkflowConverter.GRID_X;
+        x += GRID_X;
         DiagramShape join = execDiagram.add().shape(TaskSwitchGateway.class).at(x, y);
         join.getLabel().setText("join");
         current.edges().connectTo(join); // connect
 
         for (int nb = 1; nb < taskdef.getResponsibles().size(); nb++)
         {
-          DiagramShape more = execDiagram.add().shape(UserTask.class).at(x - ExpressWorkflowConverter.GRID_X,
-                  y + nb * ExpressWorkflowConverter.GRID_Y - ExpressWorkflowConverter.GRID_Y / 2);
+          DiagramShape more = execDiagram.add().shape(UserTask.class).at(x - GRID_X,
+                  y + nb * GRID_Y - GRID_Y / 2);
           createUserTask(taskdef, more, dataclassName, isfirstTask, nb);
           isfirstTask = false;
 
@@ -109,7 +111,7 @@ class ProcessWriter {
       }
     }
 
-    x += ExpressWorkflowConverter.GRID_X;
+    x += GRID_X;
     DiagramShape finalreviewtask = execDiagram.add().shape(UserTask.class).at(x, y);
     createFinalReviewTask(finalreviewtask, processname, dataclassName, tasks.size());
     previous.edges().connectTo(finalreviewtask);
@@ -118,7 +120,7 @@ class ProcessWriter {
       createSystemTaskGateway(manager, dataFields, previous);
     }
 
-    x += ExpressWorkflowConverter.GRID_X;
+    x += GRID_X;
     DiagramShape end = execDiagram.add().shape(TaskEnd.class).at(x, y);
     finalreviewtask.edges().connectTo(end);
   }

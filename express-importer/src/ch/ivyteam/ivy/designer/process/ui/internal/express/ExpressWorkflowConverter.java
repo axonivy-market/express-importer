@@ -1,5 +1,6 @@
 package ch.ivyteam.ivy.designer.process.ui.internal.express;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -27,9 +28,8 @@ import ch.ivyteam.util.io.resource.FileResource;
 
 public class ExpressWorkflowConverter
 {
-  static final int GRID_X = 128;
-  static final int GRID_Y = 96;
-  static final String NAMESPACE = "axon.ivy.express.";
+
+  static final String NAMESPACE = "express.workflow.";
 
   private final IProject project;
 
@@ -51,29 +51,17 @@ public class ExpressWorkflowConverter
     }
   }
 
-  /*
-  private void convert(ExpressProcess expressProcess) throws ResourceDataModelException, IOException
-  {
-
-    IProcessModel pm = IApplication.current().findProcessModel(TARGET_PROJECT);
-    IProcessModelVersion pmv = pm.getReleasedProcessModelVersion();
-
-    IProject project = pmv.getProject();
-    writeProcess(expressProcess, project);
-  }
-*/
-
   private void writeProcess(ExpressProcess expressProcess)
           throws ResourceDataModelException, Exception
   {
 
     IProjectProcessManager manager = IProcessManager.instance().getProjectDataModelFor(project);
-    IProcess process = manager.findProcessByPath("Business Processes/" + expressProcess.getProcessName(),
+    IProcess process = manager.findProcessByPath(expressProcess.getProcessName(),
             false);
 
     if (process != null)
     {
-      throw new ResourceDataModelException("Already existing " + process);
+      throw new ResourceDataModelException("Process already exists: " + process);
     }
     List<VariableDesc> dataFields = new ArrayList<VariableDesc>();
     String processName = StringUtil.toJavaIdentifier(expressProcess.getProcessName());
@@ -98,16 +86,17 @@ public class ExpressWorkflowConverter
     writer.refreshTree();
   }
 
-  public void from(FileResource file) {
+  public void from(FileResource file){
     Path filePath = Path.of(file.path().toString());
+
     try {
       importJson(Files.readString(filePath));
     } catch (ResourceDataModelException ex) {
-      // TODO Auto-generated catch block
-      ex.printStackTrace();
+      throw new RuntimeException(ex);
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
     } catch (Exception ex) {
-      // TODO Auto-generated catch block
-      ex.printStackTrace();
+      throw new RuntimeException(ex);
     }
 
   }
