@@ -35,7 +35,6 @@ public class ExpressImportWizardPage extends WizardPage implements IWizardPage, 
 
   public ExpressImportWizardPage(ExpressImportProcessor processor) {
     super("Import");
-    //super("Import", processor.getWizardPageTitle(PAGE_ID), ImageDescriptor.createFromFile( IvyCmsImportWizardPage.class, IvyCmsEximportUtil.PAGE_ICON));
     setMessage(processor.getWizardPageOkMessage(PAGE_ID));
     this.processor = processor;
     setPageComplete(false);

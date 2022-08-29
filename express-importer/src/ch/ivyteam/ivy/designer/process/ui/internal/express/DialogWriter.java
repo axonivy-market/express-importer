@@ -15,6 +15,7 @@ import ch.ivyteam.ivy.dialog.configuration.IUserDialogManager;
 import ch.ivyteam.ivy.dialog.configuration.jsf.JsfViewTechnologyConfiguration;
 import ch.ivyteam.ivy.dialog.ui.IViewTechnologyDesignerUi;
 import ch.ivyteam.ivy.dialog.ui.ViewTechnologyDesignerUiRegistry;
+import ch.ivyteam.ivy.process.IProcess;
 import ch.ivyteam.ivy.process.model.diagram.Diagram;
 import ch.ivyteam.ivy.process.model.diagram.shape.DiagramShape;
 import ch.ivyteam.ivy.process.model.element.event.end.dialog.html.HtmlDialogEnd;
@@ -95,7 +96,8 @@ class DialogWriter {
 
   private void createFileUploadEventHandler(IUserDialog dialog)
   {
-    Diagram diagram = dialog.getProcess(new NullProgressMonitor()).getModel().getDiagram();
+    IProcess process = dialog.getProcess(new NullProgressMonitor());
+    Diagram diagram = process.getModel().getDiagram();
     DiagramShape start = diagram.add().shape(HtmlDialogMethodStart.class).at(96, 260);
     DiagramShape end = diagram.add().shape(HtmlDialogEnd.class).at(224, 260);
     start.edges().connectTo(end);
@@ -111,6 +113,8 @@ class DialogWriter {
             + "ivyFile.writeBinary(f.getContent());\n"
             + "ivy.case.documents().add(ivyFile.getPath()).write().withContentFrom(ivyFile);");
     startmethod.setParameterMappings(mc);
+
+    process.save();
   }
 
   private void writeDialogMasterFormPanel(List<ExpressTaskDefinition> tasks, StringBuffer formPanel)
@@ -333,16 +337,16 @@ class DialogWriter {
   }
 
   private class FormComponent {
-  
+
     private String name;
     private String qualifiedName;
     private String dataClass;
-  
+
     FormComponent(String componentName) {
       this.name = componentName;
       this.qualifiedName = ExpressWorkflowConverter.NAMESPACE + componentName;
       this.dataClass = qualifiedName + "." + componentName + "Data";
     }
-  
+
   }
 }
