@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import ch.ivyteam.ivy.environment.Ivy;
 
@@ -56,8 +57,7 @@ public class BusinessEntityConverter {
 
   public static ObjectMapper getObjectMapper() {
     if (objectMapper == null) {
-      objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-      objectMapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
+      objectMapper = JsonMapper.builder().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS).build();
     }
     return objectMapper;
   }
