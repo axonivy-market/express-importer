@@ -1,7 +1,7 @@
-# MY-PRODUCT-NAME
+# Axon Ivy Express Importer
 
-[![CI Build](https://github.com/axonivy-market/REPO-NAME/actions/workflows/ci.yml/badge.svg)](https://github.com/axonivy-market/REPO-NAME/actions/workflows/ci.yml)
+[![CI Build](https://github.com/axonivy-market/express-importer/actions/workflows/ci.yml/badge.svg)](https://github.com/axonivy-market/express-importer/actions/workflows/ci.yml)
 
-"YOUR SHORT DESCRIPTION GOES HERE"
+Imports No-Code Processes from Axon Ivy Express into the Designer for further development.
 
-Read our [documentation](MY-PRODUCT-NAME-product/README.md).
+Read our [documentation](express-importer-product/README.md).
