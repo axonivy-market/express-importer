@@ -9,10 +9,8 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.ivyteam.ivy.components.ProcessKind;
 import ch.ivyteam.ivy.process.IProcess;
@@ -28,7 +26,7 @@ import ch.ivyteam.util.io.resource.FileResource;
 
 public class ExpressWorkflowConverter
 {
-
+  private static final ObjectMapper MAPPER = new ObjectMapper();
   static final String NAMESPACE = "express.workflow.";
 
   private final IProject project;
@@ -39,12 +37,11 @@ public class ExpressWorkflowConverter
 
   public void importJson(String json) throws Exception, ResourceDataModelException
   {
-    Gson gson = new GsonBuilder().serializeNulls().create();
-    JsonObject jsonObject = gson.fromJson(json, JsonObject.class);
-
-    JsonElement workflowsElement = jsonObject.get("expressWorkflow");
+    JsonNode root = MAPPER.readTree(json);
+    JsonNode node = root.get("expressWorkflow");
+    String wf = MAPPER.writeValueAsString(node);
     List<ExpressProcess> expressProcessEntities = BusinessEntityConverter
-            .jsonValueToEntities(workflowsElement.toString(), ExpressProcess.class);
+            .jsonValueToEntities(wf, ExpressProcess.class);
     for (ExpressProcess expressProcess : expressProcessEntities)
     {
       writeProcess(expressProcess);
