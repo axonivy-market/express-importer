@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+  <extension point="org.eclipse.ui.importWizards">
+    <wizard
+        category="ivy"
+        class="ch.ivyteam.ivy.designer.process.ui.internal.express.ExpressImportWizard"
+        icon="platform:/plugin/ch.ivyteam.ivy.designer.process.ui/icons/process.gif"
+        id="designer.process.ui.bpm.import"
+        name="Ivy Express workflow (.json)">
+    </wizard>
+  </extension>
 </plugin>
