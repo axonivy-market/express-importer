@@ -31,7 +31,7 @@ jobs:
     - name: Build with Maven
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: mvn --batch-mode -DpreparationGoals="org.eclipse.tycho:tycho-versions-plugin:2.7.5:update-eclipse-metadata org.apache.maven.plugins:maven-scm-plugin:1.11.2:add org.apache.maven.plugins:maven-scm-plugin:1.11.2:checkin" -Darguments="-Dmaven.test.skip=true -DaltDeploymentRepository=github::https://maven.pkg.github.com/axonivy-market/${{ github.event.repository.name }}" release:prepare release:perform
+      run: mvn --batch-mode -Dincludes="**/META-INF/MANIFEST.MF" -DpreparationGoals="org.eclipse.tycho:tycho-versions-plugin:2.7.5:update-eclipse-metadata org.apache.maven.plugins:maven-scm-plugin:1.11.2:add org.apache.maven.plugins:maven-scm-plugin:1.11.2:checkin" -Darguments="-Dmaven.test.skip=true -DaltDeploymentRepository=github::https://maven.pkg.github.com/axonivy-market/${{ github.event.repository.name }}" release:prepare release:perform
 
     - name: Create pull request
       uses: repo-sync/pull-request@v2
