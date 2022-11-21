@@ -1,8 +1,7 @@
 package ch.ivyteam.ivy.designer.process.ui.internal.express;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,10 +83,8 @@ public class ExpressWorkflowConverter
   }
 
   public void from(FileResource file){
-    Path filePath = Path.of(file.path().toString());
-
     try {
-      importJson(Files.readString(filePath));
+      importJson(file.read().string(StandardCharsets.UTF_8));
     } catch (ResourceDataModelException ex) {
       throw new RuntimeException(ex);
     } catch (IOException ex) {
