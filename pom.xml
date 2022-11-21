@@ -7,10 +7,10 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>${project.name}</module>
+    <module>express-importer</module>
     <!--<module>${project.name}-demo</module>
     <module>${project.name}-test</module>-->
-    <module>${project.name}-product</module>
+    <module>express-importer-product</module>
   </modules>
 
   <scm>
