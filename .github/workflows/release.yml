@@ -1,7 +1,42 @@
-name: Release-Build
+name: Reusable Release-Build
 
-on: workflow_dispatch
+on: 
+  workflow_call:
 
 jobs:
   build:
-    uses: axonivy-market/github-workflows/.github/workflows/release.yml@v2
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Get branch name
+      id: branch-name
+      uses: tj-actions/branch-names@v6
+
+    - name: Setup Java JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: 17
+        distribution: temurin
+        server-id: github
+
+    - name: Configure Git
+      run: |
+        git config user.email "${{ github.actor }}@users.noreply.github.com"
+        git config user.name "${{ github.actor }}"
+        git checkout -b new-release
+
+    - name: Build with Maven
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: mvn --batch-mode -Darguments="-Dmaven.test.skip=true -DaltDeploymentRepository=github::https://maven.pkg.github.com/axonivy-market/${{ github.event.repository.name }}" release:prepare release:perform
+
+    - name: Create pull request
+      uses: repo-sync/pull-request@v2
+      with:
+        destination_branch: ${{ steps.branch-name.outputs.current_branch }}
+        source_branch: new-release
+        pr_title: "Release"
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        pr_assignee: ${{ github.actor }}
