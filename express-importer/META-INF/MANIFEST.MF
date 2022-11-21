@@ -4,10 +4,10 @@ Bundle-Name: Axon Ivy Express Importer
 Bundle-SymbolicName: express-importer;singleton:=true
 Bundle-Version: 10.0.0.qualifier
 Require-Bundle: ch.ivyteam.ivy.components,
- ch.ivyteam.ivy.designer.process.ui;resolution:=optional,
- ch.ivyteam.ivy.designer.ide;resolution:=optional,
- ch.ivyteam.ivy.designer.project.ui;resolution:=optional,
- ch.ivyteam.lib.jackson;resolution:=optional,
+ ch.ivyteam.ivy.designer.ide,
+ ch.ivyteam.ivy.dialog.config,
+ ch.ivyteam.ivy.designer.project.ui,
+ ch.ivyteam.lib.jackson,
  ch.ivyteam.lib.apache.commons.io,
  ch.ivyteam.lib.apache.commons.lang3,
  ch.ivyteam.lib.apache.commons.text,
