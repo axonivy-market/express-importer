@@ -1,4 +1,4 @@
-package ch.ivyteam.ivy.designer.process.ui.internal.express;
+package com.axonivy.portal.express.importer;
 
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;

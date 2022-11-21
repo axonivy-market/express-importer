@@ -1,4 +1,4 @@
-package ch.ivyteam.ivy.designer.process.ui.internal.express;
+package com.axonivy.portal.express.importer;
 public class ExpressImportException extends RuntimeException {
 
   private static final long serialVersionUID = 1L;

@@ -1,4 +1,4 @@
-package ch.ivyteam.ivy.designer.process.ui.internal.express;
+package com.axonivy.portal.express.importer;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;

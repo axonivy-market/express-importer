@@ -4,7 +4,7 @@
   <extension point="org.eclipse.ui.importWizards">
     <wizard
         category="ivy"
-        class="ch.ivyteam.ivy.designer.process.ui.internal.express.ExpressImportWizard"
+        class="com.axonivy.portal.express.importer.ExpressImportWizard"
         icon="platform:/plugin/ch.ivyteam.ivy.designer.process.ui/icons/process.gif"
         id="designer.process.ui.bpm.import"
         name="Ivy Express workflow (.json)">
