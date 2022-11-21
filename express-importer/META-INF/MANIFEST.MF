@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Axon Ivy Express Importer
+Bundle-SymbolicName: express-importer;singleton:=true
+Bundle-Version: 10.0.0.qualifier
+Require-Bundle: ch.ivyteam.ivy.components,
+ ch.ivyteam.ivy.designer.ide,
+ ch.ivyteam.ivy.dialog.config,
+ ch.ivyteam.ivy.designer.project.ui,
+ ch.ivyteam.lib.jackson,
+ ch.ivyteam.lib.apache.commons.io,
+ ch.ivyteam.lib.apache.commons.lang3,
+ ch.ivyteam.lib.apache.commons.text,
+ ch.ivyteam.util.io,
+ ch.ivyteam.ivy.runtime.env
+Bundle-ClassPath: .
+Bundle-ActivationPolicy: lazy
