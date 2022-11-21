@@ -10,7 +10,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.compiler.compliance>17</java.compiler.compliance>
     <tycho.version>2.7.5</tycho.version>
-    <maven.scm.plugin>1.11.2</maven.scm.plugin>
+    <maven.scm.plugin>2.0.0-M3</maven.scm.plugin>
   </properties>
 
   <repositories>
@@ -24,6 +24,25 @@
   <build>
     <testSourceDirectory>test</testSourceDirectory>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-scm-plugin</artifactId>
+        <version>${maven.scm.plugin}</version>
+        <executions>
+          <execution>
+            <id>default-cli</id>
+            <goals>
+              <goal>add</goal>
+              <goal>checkin</goal>
+            </goals>
+            <configuration>
+              <includes>**/META-INF/MANIFEST.MF</includes>
+              <excludes>target/**</excludes>
+            <message>Changing the version to reflect the pom versions for the release</message>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-maven-plugin</artifactId>
@@ -83,24 +102,6 @@
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>target-platform-configuration</artifactId>
           <version>${tycho.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-scm-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>default-cli</id>
-              <goals>
-                <goal>add</goal>
-                <goal>checkin</goal>
-              </goals>
-              <configuration>
-                <includes>**/META-INF/MANIFEST.MF</includes>
-                <excludes>target/**</excludes>
-              <message>Changing the version to reflect the pom versions for the release</message>
-              </configuration>
-            </execution>
-          </executions>
         </plugin>
 
         <plugin>
