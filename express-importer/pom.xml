@@ -3,13 +3,14 @@
 
   <groupId>com.axonivy.portal.express</groupId>
   <artifactId>express-importer</artifactId>
-  <version>10.0.0-SNAPSHOT</version>
+  <version>10.0.1-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.compiler.compliance>17</java.compiler.compliance>
     <tycho.version>2.7.5</tycho.version>
+    <maven.scm.plugin>2.0.0-M3</maven.scm.plugin>
   </properties>
 
   <repositories>

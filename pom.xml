@@ -3,20 +3,26 @@
   <groupId>com.axonivy.portal.express</groupId>
   <name>express-importer</name>
   <artifactId>express-importer-modules</artifactId>
-  <version>10.0.0-SNAPSHOT</version>
+  <version>10.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
-    <module>${project.name}</module>
+    <module>express-importer</module>
     <!--<module>${project.name}-demo</module>
     <module>${project.name}-test</module>-->
-    <module>${project.name}-product</module>
+    <module>express-importer-product</module>
   </modules>
 
   <scm>
     <developerConnection>scm:git:https://github.com/axonivy-market/${project.name}.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
+
+  <properties>
+    <tycho.version>2.7.5</tycho.version>
+    <maven.scm.plugin>2.0.0-M3</maven.scm.plugin>
+    <release.goals>org.eclipse.tycho:tycho-versions-plugin:${tycho.version}:update-eclipse-metadata org.apache.maven.plugins:maven-scm-plugin:${maven.scm.plugin}:add org.apache.maven.plugins:maven-scm-plugin:${maven.scm.plugin}:checkin</release.goals>
+  </properties>
 
   <build>
     <pluginManagement>
@@ -34,7 +40,28 @@
           <version>3.0.0-M4</version>
           <configuration>
             <tagNameFormat>v@{project.version}</tagNameFormat>
+            <preparationGoals>${release.goals}</preparationGoals>
+            <completionGoals>${release.goals}</completionGoals>
           </configuration>
+          </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-scm-plugin</artifactId>
+          <version>${maven.scm.plugin}</version>
+          <executions>
+            <execution>
+              <id>default-cli</id>
+              <goals>
+                <goal>add</goal>
+                <goal>checkin</goal>
+              </goals>
+              <configuration>
+                <includes>**/META-INF/MANIFEST.MF,pom.xml</includes>
+                <excludes>**/target/**</excludes>
+                <message>Changing the version to reflect the pom versions for the release</message>
+              </configuration>
+            </execution>
+          </executions>
         </plugin>
       </plugins>
     </pluginManagement>
