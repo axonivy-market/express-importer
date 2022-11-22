@@ -44,6 +44,22 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>3.0.0-M4</version>
+        <executions>
+          <execution>
+            <id>default-cli</id>
+            <goals>
+              <goal>prepare</goal>
+            </goals>
+            <configuration>
+              <preparationGoals>org.eclipse.tycho:tycho-versions-plugin:${tycho.version}:update-eclipse-metadata org.apache.maven.plugins:maven-scm-plugin:${maven.scm.plugin}:add org.apache.maven.plugins:maven-scm-plugin:${maven.scm.plugin}:checkin</preparationGoals>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-maven-plugin</artifactId>
         <version>${tycho.version}</version>
@@ -69,14 +85,6 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <version>3.0.0-M4</version>
-        <configuration>
-          <preparationGoals>org.eclipse.tycho:tycho-versions-plugin:${tycho.version}:update-eclipse-metadata org.apache.maven.plugins:maven-scm-plugin:${maven.scm.plugin}:add org.apache.maven.plugins:maven-scm-plugin:${maven.scm.plugin}:checkin</preparationGoals>
-        </configuration>
       </plugin>
     </plugins>
 
