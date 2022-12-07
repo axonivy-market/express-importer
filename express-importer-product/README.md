@@ -10,9 +10,3 @@ Imports your no-code Express Workflow from the Portal into a Designer Workflow A
 4. Select the target project for the import. And use the previously download express workflow .json as source. ![sources](img/select-source-and-target.png)
 5. Finish the Wizard
 6. Run your and extend your imported Process ![wizard](img/run-imported-process.png)
-
-
-## Setup
-
-1. Copy the express-import.jar into the `dropins` directory of your Axon Ivy Designer ![dropin](img/express-importer-jar.png)
-2. Restart your Axon Ivy Designer
