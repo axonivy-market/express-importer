@@ -1,12 +1,10 @@
 package com.axonivy.portal.express.importer;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.NullProgressMonitor;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,7 +19,6 @@ import ch.ivyteam.ivy.process.resource.ProcessCreator;
 import ch.ivyteam.ivy.resource.datamodel.ResourceDataModelException;
 import ch.ivyteam.util.StringUtil;
 import ch.ivyteam.util.io.resource.FileResource;
-
 
 public class ExpressWorkflowConverter
 {
@@ -69,7 +66,7 @@ public class ExpressWorkflowConverter
             .namespace("")
             .dataClassName(dataclassName).createDefaultContent(false).dataClassFields(dataFields).toCreator();
 
-    creator.createDataModel(new NullProgressMonitor());
+    creator.createDataModel();
     process = creator.getCreatedProcess();
 
     Diagram diagram = process.getModel().getDiagram();
@@ -82,17 +79,11 @@ public class ExpressWorkflowConverter
     writer.refreshTree();
   }
 
-  public void from(FileResource file){
+  public void from(FileResource file) {
     try {
       importJson(file.read().string(StandardCharsets.UTF_8));
-    } catch (ResourceDataModelException ex) {
-      throw new RuntimeException(ex);
-    } catch (IOException ex) {
-      throw new RuntimeException(ex);
     } catch (Exception ex) {
       throw new RuntimeException(ex);
     }
-
   }
-
 }
