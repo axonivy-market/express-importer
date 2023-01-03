@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.NullProgressMonitor;
 
 import ch.ivyteam.ivy.dialog.configuration.DialogCreationParameters;
 import ch.ivyteam.ivy.dialog.configuration.IUserDialog;
@@ -89,14 +88,13 @@ class DialogWriter {
                     .signature(dlgCallSigature)
                     .addCreationParameter(template, resultMappings).toCreationParams();
     IUserDialogManager.instance().getProjectDataModelFor(project)
-            .createProjectUserDialog(params,
-                    new NullProgressMonitor());
+            .createProjectUserDialog(params);
 
   }
 
   private void createFileUploadEventHandler(IUserDialog dialog)
   {
-    IProcess process = dialog.getProcess(new NullProgressMonitor());
+    IProcess process = dialog.getProcess();
     Diagram diagram = process.getModel().getDiagram();
     DiagramShape start = diagram.add().shape(HtmlDialogMethodStart.class).at(96, 260);
     DiagramShape end = diagram.add().shape(HtmlDialogEnd.class).at(224, 260);
@@ -215,8 +213,7 @@ class DialogWriter {
             .viewContent(viewForm).dataClassFields(form.dialogDataFields).calleeParamMappings(paramMappings)
             .calleeResultMappings(resultMappings).signature(dlgCallSigature).toCreationParams();
     IUserDialog dialog = IUserDialogManager.instance().getProjectDataModelFor(project)
-            .createProjectUserDialog(params,
-                    new NullProgressMonitor());
+            .createProjectUserDialog(params);
 
     if (form.withFileUpload)
     {
