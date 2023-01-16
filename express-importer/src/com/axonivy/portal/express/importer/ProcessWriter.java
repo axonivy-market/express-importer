@@ -1,6 +1,5 @@
 package com.axonivy.portal.express.importer;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -13,11 +12,11 @@ import ch.ivyteam.ivy.process.IProjectProcessManager;
 import ch.ivyteam.ivy.process.model.diagram.Diagram;
 import ch.ivyteam.ivy.process.model.diagram.shape.DiagramShape;
 import ch.ivyteam.ivy.process.model.element.activity.UserTask;
+import ch.ivyteam.ivy.process.model.element.activity.value.CallSignatureRef;
 import ch.ivyteam.ivy.process.model.element.activity.value.dialog.UserDialogId;
 import ch.ivyteam.ivy.process.model.element.activity.value.dialog.UserDialogStart;
 import ch.ivyteam.ivy.process.model.element.event.end.TaskEnd;
 import ch.ivyteam.ivy.process.model.element.event.start.RequestStart;
-import ch.ivyteam.ivy.process.model.element.event.start.value.CallSignature;
 import ch.ivyteam.ivy.process.model.element.event.start.value.StartAccessPermissions;
 import ch.ivyteam.ivy.process.model.element.gateway.TaskSwitchGateway;
 import ch.ivyteam.ivy.process.model.element.value.CaseConfig;
@@ -31,6 +30,7 @@ import ch.ivyteam.ivy.process.model.element.value.task.TaskConfig;
 import ch.ivyteam.ivy.process.model.element.value.task.TaskConfigs;
 import ch.ivyteam.ivy.process.model.element.value.task.TaskIdentifier;
 import ch.ivyteam.ivy.process.model.value.MappingCode;
+import ch.ivyteam.ivy.process.model.value.scripting.QualifiedType;
 import ch.ivyteam.ivy.process.model.value.scripting.VariableDesc;
 import ch.ivyteam.ivy.server.restricted.EngineMode;
 import ch.ivyteam.util.StringUtil;
@@ -204,15 +204,7 @@ class ProcessWriter {
 
     usertask.setTaskConfig(taskConfig);
 
-    List<VariableDesc> inputParameters = Arrays.asList(new VariableDesc("data", dataclassName));
-    List<VariableDesc> outputParameters = Arrays.asList(new VariableDesc("data", dataclassName));
-    CallSignature callSigature = new CallSignature("start", inputParameters, outputParameters);
-    UserDialogStart userDialogStart = usertask.getTargetDialog()
-            .setId(UserDialogId.create(ExpressWorkflowConverter.NAMESPACE + StringUtil.toJavaIdentifier("TaskDialog")))
-            .setStartMethod(callSigature);
-    usertask.setTargetDialog(userDialogStart);
-    usertask.setParameters(MappingCode.mapOnly("param.data", "in"));
-    usertask.setOutput(MappingCode.mapOnly("out", "result.data"));
+    createUserTask(usertask, dataclassName);
   }
 
   private void createFinalReviewTask(DiagramShape finalreviewtask, String processname,
@@ -236,16 +228,18 @@ class ProcessWriter {
     taskConfig = taskConfig.setCustomFields(customFields);
     usertask.setTaskConfig(taskConfig);
 
-    List<VariableDesc> inputParameters = Arrays.asList(new VariableDesc("data", dataclassName));
-    List<VariableDesc> outputParameters = Arrays.asList(new VariableDesc("data", dataclassName));
-    CallSignature callSigature = new CallSignature("start", inputParameters, outputParameters);
+    createUserTask(usertask, dataclassName);
+
+  }
+
+  private void createUserTask(UserTask usertask, String dataclassName) {
+    CallSignatureRef signature = new CallSignatureRef("start", List.of(new QualifiedType(dataclassName)));
     UserDialogStart userDialogStart = usertask.getTargetDialog()
-            .setId(UserDialogId.create(ExpressWorkflowConverter.NAMESPACE + StringUtil.toJavaIdentifier("TaskDialog")))
-            .setStartMethod(callSigature);
+        .setId(UserDialogId.create(ExpressWorkflowConverter.NAMESPACE + StringUtil.toJavaIdentifier("TaskDialog")))
+        .setStartMethod(signature);
     usertask.setTargetDialog(userDialogStart);
     usertask.setParameters(MappingCode.mapOnly("param.data", "in"));
     usertask.setOutput(MappingCode.mapOnly("out", "result.data"));
-
   }
 
   private void makeExecutable(RequestStart starter, String processname, String steps)
