@@ -8,7 +8,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
-import ch.ivyteam.ivy.process.IProjectProcessManager;
+import ch.ivyteam.ivy.process.rdm.IProjectProcessManager;
 import ch.ivyteam.ivy.process.model.diagram.Diagram;
 import ch.ivyteam.ivy.process.model.diagram.shape.DiagramShape;
 import ch.ivyteam.ivy.process.model.element.activity.UserTask;
@@ -32,6 +32,7 @@ import ch.ivyteam.ivy.process.model.element.value.task.TaskIdentifier;
 import ch.ivyteam.ivy.process.model.value.MappingCode;
 import ch.ivyteam.ivy.process.model.value.scripting.QualifiedType;
 import ch.ivyteam.ivy.process.model.value.scripting.VariableDesc;
+import ch.ivyteam.ivy.process.model.zimpl.LegacyAPI;
 import ch.ivyteam.ivy.server.restricted.EngineMode;
 import ch.ivyteam.util.StringUtil;
 
@@ -128,7 +129,7 @@ class ProcessWriter {
   private void createSystemTaskGateway(IProjectProcessManager manager, List<VariableDesc> dataFields,
           DiagramShape taskGateway)
   {
-    manager.getProcessConfigurator().updateElement(taskGateway.getElement().getLegacyAPI().getZObject());
+    manager.getProcessConfigurator().updateElement(LegacyAPI.of(taskGateway.getElement()).getZObject());
     TaskSwitchGateway gateway = taskGateway.getElement();
     TaskConfigs taskConfigs = gateway.getTaskConfigs();
     Set<TaskIdentifier> taskIdentifiers = taskConfigs.getTaskIdentifiers();

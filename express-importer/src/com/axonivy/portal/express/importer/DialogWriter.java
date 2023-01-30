@@ -14,7 +14,7 @@ import ch.ivyteam.ivy.dialog.configuration.IUserDialogManager;
 import ch.ivyteam.ivy.dialog.configuration.jsf.JsfViewTechnologyConfiguration;
 import ch.ivyteam.ivy.dialog.ui.IViewTechnologyDesignerUi;
 import ch.ivyteam.ivy.dialog.ui.ViewTechnologyDesignerUiRegistry;
-import ch.ivyteam.ivy.process.IProcess;
+import ch.ivyteam.ivy.process.rdm.IProcess;
 import ch.ivyteam.ivy.process.model.diagram.Diagram;
 import ch.ivyteam.ivy.process.model.diagram.shape.DiagramShape;
 import ch.ivyteam.ivy.process.model.element.event.end.dialog.html.HtmlDialogEnd;
