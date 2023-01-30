@@ -9,13 +9,13 @@ import org.eclipse.core.resources.IProject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ch.ivyteam.ivy.components.ProcessKind;
-import ch.ivyteam.ivy.process.IProcess;
-import ch.ivyteam.ivy.process.IProcessManager;
-import ch.ivyteam.ivy.process.IProjectProcessManager;
+import ch.ivyteam.ivy.process.model.ProcessKind;
+import ch.ivyteam.ivy.process.rdm.IProcess;
+import ch.ivyteam.ivy.process.rdm.IProcessManager;
+import ch.ivyteam.ivy.process.rdm.IProjectProcessManager;
 import ch.ivyteam.ivy.process.model.diagram.Diagram;
 import ch.ivyteam.ivy.process.model.value.scripting.VariableDesc;
-import ch.ivyteam.ivy.process.resource.ProcessCreator;
+import ch.ivyteam.ivy.process.rdm.resource.ProcessCreator;
 import ch.ivyteam.ivy.resource.datamodel.ResourceDataModelException;
 import ch.ivyteam.util.StringUtil;
 import ch.ivyteam.util.io.resource.FileResource;
