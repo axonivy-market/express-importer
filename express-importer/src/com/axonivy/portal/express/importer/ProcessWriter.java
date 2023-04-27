@@ -17,6 +17,7 @@ import ch.ivyteam.ivy.process.model.element.activity.value.dialog.UserDialogId;
 import ch.ivyteam.ivy.process.model.element.activity.value.dialog.UserDialogStart;
 import ch.ivyteam.ivy.process.model.element.event.end.TaskEnd;
 import ch.ivyteam.ivy.process.model.element.event.start.RequestStart;
+import ch.ivyteam.ivy.process.model.element.event.start.value.CallSignature;
 import ch.ivyteam.ivy.process.model.element.event.start.value.StartAccessPermissions;
 import ch.ivyteam.ivy.process.model.element.gateway.TaskSwitchGateway;
 import ch.ivyteam.ivy.process.model.element.value.CaseConfig;
@@ -245,10 +246,9 @@ class ProcessWriter {
 
   private void makeExecutable(RequestStart starter, String processname, String steps)
   {
-    starter.setLinkName("start_" + processname + ".ivp");
+    starter.setSignature(new CallSignature("start_" + processname));
     starter.setDescription(processname);
-    starter.setStartByHttpRequestAllowed(true);
-    starter.setStartName(processname);
+    starter.setRequest(starter.getRequest().isHttpRequestable(true).name(processname));
     StartAccessPermissions permissions = new StartAccessPermissions("Everybody");
     starter.setRequiredPermissions(permissions);
 
