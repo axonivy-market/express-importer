@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.type.CollectionType;
 
 import ch.ivyteam.log.Logger;
 
@@ -44,8 +45,8 @@ public class BusinessEntityConverter {
       return new ArrayList<>();
     }
     try {
-      return getObjectMapper().readValue(jsonValue,
-          getObjectMapper().getTypeFactory().constructCollectionType(List.class, classType));
+      CollectionType type = getObjectMapper().getTypeFactory().constructCollectionType(List.class, classType);
+      return getObjectMapper().readValue(jsonValue, type);
     } catch (IOException e) {
       LOGGER.error("Can't read json value", e);
       throw new ExpressImportException(e);
@@ -58,7 +59,10 @@ public class BusinessEntityConverter {
 
   public static ObjectMapper getObjectMapper() {
     if (objectMapper == null) {
-      objectMapper = JsonMapper.builder().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false).enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS).build();
+      objectMapper = JsonMapper.builder()
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
+        .build();
     }
     return objectMapper;
   }
