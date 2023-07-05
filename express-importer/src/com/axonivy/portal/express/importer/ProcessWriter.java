@@ -184,9 +184,12 @@ class ProcessWriter {
 
     taskConfig = taskConfig.setTaskListSkipped(isfirstTask);
 
-    Activator activator = new Activator("\"" + taskdef.getResponsibles().get(index) + "\"",
-            ActivatorType.ROLE_FROM_ATTRIBUTE);
-    taskConfig = taskConfig.setActivator(activator);
+    List<String> responsibles = taskdef.getResponsibles();
+    if (index < responsibles.size()) {
+      Activator activator = new Activator("\"" + responsibles.get(index) + "\"",
+              ActivatorType.ROLE_FROM_ATTRIBUTE);
+      taskConfig = taskConfig.setActivator(activator);
+    }
 
     List<CustomField> customFields = taskConfig.getCustomFields();
     customFields

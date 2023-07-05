@@ -14,7 +14,6 @@ import ch.ivyteam.ivy.dialog.configuration.IUserDialogManager;
 import ch.ivyteam.ivy.dialog.configuration.jsf.JsfViewTechnologyConfiguration;
 import ch.ivyteam.ivy.dialog.ui.IViewTechnologyDesignerUi;
 import ch.ivyteam.ivy.dialog.ui.ViewTechnologyDesignerUiRegistry;
-import ch.ivyteam.ivy.process.rdm.IProcess;
 import ch.ivyteam.ivy.process.model.diagram.Diagram;
 import ch.ivyteam.ivy.process.model.diagram.shape.DiagramShape;
 import ch.ivyteam.ivy.process.model.element.event.end.dialog.html.HtmlDialogEnd;
@@ -23,6 +22,7 @@ import ch.ivyteam.ivy.process.model.element.event.start.value.CallSignature;
 import ch.ivyteam.ivy.process.model.element.value.Mapping;
 import ch.ivyteam.ivy.process.model.value.MappingCode;
 import ch.ivyteam.ivy.process.model.value.scripting.VariableDesc;
+import ch.ivyteam.ivy.process.rdm.IProcess;
 import ch.ivyteam.ivy.project.IvyProjectNavigationUtil;
 import ch.ivyteam.ivy.resource.datamodel.ResourceDataModelException;
 import ch.ivyteam.util.StringUtil;
@@ -242,6 +242,9 @@ class DialogWriter {
   {
     var result = new FormParseResult();
     result.dialogDataFields.add(new VariableDesc("wfuser", "java.lang.String"));
+    if (formElements == null) {
+      return result;
+    }
     for (ExpressFormElement formElement : formElements)
     {
       String datafield = StringUtil.toJavaIdentifier(formElement.getLabel().replace(":", ""));
