@@ -20,66 +20,54 @@ import ch.ivyteam.ivy.resource.datamodel.ResourceDataModelException;
 import ch.ivyteam.util.StringUtil;
 import ch.ivyteam.util.io.resource.FileResource;
 
-public class ExpressWorkflowConverter
-{
+public class ExpressWorkflowConverter {
+
   private static final ObjectMapper MAPPER = new ObjectMapper();
   static final String NAMESPACE = "express.workflow.";
-
   private final IProject project;
 
   public ExpressWorkflowConverter(IProject project) {
     this.project = project;
   }
 
-  public void importJson(String json) throws Exception, ResourceDataModelException
-  {
+  public void importJson(String json) throws Exception, ResourceDataModelException {
     JsonNode root = MAPPER.readTree(json);
     JsonNode node = root.get("expressWorkflow");
     String wf = MAPPER.writeValueAsString(node);
     List<ExpressProcess> expressProcessEntities = BusinessEntityConverter
-            .jsonValueToEntities(wf, ExpressProcess.class);
-    for (ExpressProcess expressProcess : expressProcessEntities)
-    {
+       .jsonValueToEntities(wf, ExpressProcess.class);
+    for (ExpressProcess expressProcess : expressProcessEntities) {
       writeProcess(expressProcess);
     }
   }
 
-  private void writeProcess(ExpressProcess expressProcess)
-          throws ResourceDataModelException, Exception
-  {
-
+  private void writeProcess(ExpressProcess expressProcess) throws Exception {
     IProjectProcessManager manager = IProcessManager.instance().getProjectDataModelFor(project);
-    IProcess process = manager.findProcessByPath(expressProcess.getProcessName(),
-            false);
-
-    if (process != null)
-    {
+    IProcess process = manager.findProcessByPath(expressProcess.getProcessName(), false);
+    if (process != null) {
       throw new ResourceDataModelException("Process already exists: " + process);
     }
     List<VariableDesc> dataFields = new ArrayList<VariableDesc>();
     String processName = StringUtil.toJavaIdentifier(expressProcess.getProcessName());
     String dataclassName = NAMESPACE + processName + "Data";
-
     new DialogWriter(project).createDialogs(expressProcess.getTaskDefinitions(), dataFields, dataclassName, processName);
-
-    ProcessCreator creator = ProcessCreator.create(project, processName).kind(ProcessKind.NORMAL)
-            .namespace("")
-            .dataClassName(dataclassName).createDefaultContent(false).dataClassFields(dataFields).toCreator();
-
+    ProcessCreator creator = ProcessCreator.create(project, processName)
+      .kind(ProcessKind.NORMAL)
+      .namespace("")
+      .dataClassName(dataclassName)
+      .createDefaultContent(false)
+      .dataClassFields(dataFields)
+      .toCreator();
     creator.createDataModel();
     process = creator.getCreatedProcess();
-
     Diagram diagram = process.getModel().getDiagram();
-
     ProcessWriter writer = new ProcessWriter(project);
     writer.drawElements(
       expressProcess.getTaskDefinitions(),
       diagram,
       expressProcess.getProcessName(),
       dataclassName,
-      dataFields
-    );
-
+      dataFields);
     process.save();
     writer.refreshTree();
   }
