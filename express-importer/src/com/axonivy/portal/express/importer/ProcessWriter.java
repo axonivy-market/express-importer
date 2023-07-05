@@ -8,7 +8,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
-import ch.ivyteam.ivy.process.rdm.IProjectProcessManager;
 import ch.ivyteam.ivy.process.model.diagram.Diagram;
 import ch.ivyteam.ivy.process.model.diagram.shape.DiagramShape;
 import ch.ivyteam.ivy.process.model.element.activity.UserTask;
@@ -33,7 +32,6 @@ import ch.ivyteam.ivy.process.model.element.value.task.TaskIdentifier;
 import ch.ivyteam.ivy.process.model.value.MappingCode;
 import ch.ivyteam.ivy.process.model.value.scripting.QualifiedType;
 import ch.ivyteam.ivy.process.model.value.scripting.VariableDesc;
-import ch.ivyteam.ivy.process.model.zimpl.LegacyAPI;
 import ch.ivyteam.ivy.server.restricted.EngineMode;
 import ch.ivyteam.util.StringUtil;
 
@@ -49,7 +47,7 @@ class ProcessWriter {
   }
 
   void drawElements(List<ExpressTaskDefinition> tasks, Diagram execDiagram, String processname,
-          String dataclassName, List<VariableDesc> dataFields, IProjectProcessManager manager)
+          String dataclassName, List<VariableDesc> dataFields)
   {
     int x = GRID_X;
     int y = GRID_Y;
@@ -93,7 +91,7 @@ class ProcessWriter {
           more.edges().connectTo(join); // connect
 
         }
-        createSystemTaskGateway(manager, dataFields, split);
+        createSystemTaskGateway(dataFields, split);
 
         previous = join;
 
@@ -106,7 +104,7 @@ class ProcessWriter {
         previous.edges().connectTo(current); // connect
         if (previous.representsInstanceOf(TaskSwitchGateway.class))
         {
-          createSystemTaskGateway(manager, dataFields, previous);
+          createSystemTaskGateway(dataFields, previous);
         }
 
         previous = current;
@@ -119,7 +117,7 @@ class ProcessWriter {
     previous.edges().connectTo(finalreviewtask);
     if (previous.representsInstanceOf(TaskSwitchGateway.class))
     {
-      createSystemTaskGateway(manager, dataFields, previous);
+      createSystemTaskGateway(dataFields, previous);
     }
 
     x += GRID_X;
@@ -127,10 +125,8 @@ class ProcessWriter {
     finalreviewtask.edges().connectTo(end);
   }
 
-  private void createSystemTaskGateway(IProjectProcessManager manager, List<VariableDesc> dataFields,
-          DiagramShape taskGateway)
+  private void createSystemTaskGateway(List<VariableDesc> dataFields, DiagramShape taskGateway)
   {
-    manager.getProcessConfigurator().updateElement(LegacyAPI.of(taskGateway.getElement()).getZObject());
     TaskSwitchGateway gateway = taskGateway.getElement();
     TaskConfigs taskConfigs = gateway.getTaskConfigs();
     Set<TaskIdentifier> taskIdentifiers = taskConfigs.getTaskIdentifiers();
