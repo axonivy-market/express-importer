@@ -38,19 +38,25 @@ class DialogWriter {
 
   void createDialogs(List<ExpressTaskDefinition> tasks,
           List<VariableDesc> dataFields, String dataclassName, String processName)
-          throws ResourceDataModelException, Exception
-  {
-    for (ExpressTaskDefinition taskdef : tasks)
-    {
-      createDialogComponent(taskdef, dataFields);
+          throws ResourceDataModelException, Exception {
+    for (ExpressTaskDefinition taskdef : tasks) {
+      switch (taskdef.getType()) {
+        case "USER_TASK": createUserTaskDialogComponent(taskdef, dataFields);
+        break;
+        case "USER_TASK_WITH_EMAIL": createUserTaskDialogComponent(taskdef, dataFields);
+        break;
+        case "APPROVAL": createApprovalTaskDialogComponent(taskdef, dataFields);
+        break;
+        case "EMAIL":
+        break;
+      }
     }
-    createDialogMaster(tasks,dataclassName, processName);
+    createDialogMaster(tasks, dataclassName, processName);
   }
 
   private void createDialogMaster(List<ExpressTaskDefinition> tasks,
           String dataclassName, String processName)
-          throws Exception
-  {
+          throws Exception {
     StringBuffer stepsPanel = new StringBuffer();
     StringBuffer formPanel = new StringBuffer();
 
@@ -78,12 +84,15 @@ class DialogWriter {
                     "ivy.task.customFields().numberField(\"parallelindex\").getOrDefault(0)"));
     List<Mapping> resultMappings = Arrays.asList(new Mapping("result.data", "in.processData"));
 
-    var ivyProject =IvyProjectNavigationUtil.getIvyProject(project);
-    IViewTechnologyDesignerUi viewTech = ViewTechnologyDesignerUiRegistry.getInstance().getViewTechnology(JsfViewTechnologyConfiguration.TECHNOLOGY_IDENTIFIER);
-    viewTech.getViewLayoutProvider().getViewLayouts(ivyProject).get(0).getViewContent(ExpressWorkflowConverter.NAMESPACE, "frame-10", null);
+    var ivyProject = IvyProjectNavigationUtil.getIvyProject(project);
+    IViewTechnologyDesignerUi viewTech = ViewTechnologyDesignerUiRegistry.getInstance()
+            .getViewTechnology(JsfViewTechnologyConfiguration.TECHNOLOGY_IDENTIFIER);
+    viewTech.getViewLayoutProvider().getViewLayouts(ivyProject).get(0)
+            .getViewContent(ExpressWorkflowConverter.NAMESPACE, "frame-10-full-width", null);
 
     DialogCreationParameters params = new DialogCreationParameters.Builder(project,
-            ExpressWorkflowConverter.NAMESPACE + StringUtil.toJavaIdentifier("TaskDialog")).viewContent(template)
+            ExpressWorkflowConverter.NAMESPACE + StringUtil.toJavaIdentifier(processName+"TaskDialog"))
+                    .viewContent(template)
                     .dataClassFields(dlgDataFields).calleeParamMappings(paramMappings)
                     .calleeResultMappings(resultMappings)
                     .signature(dlgCallSigature)
@@ -94,10 +103,11 @@ class DialogWriter {
 
   }
 
-  private void createFileUploadEventHandler(IUserDialog dialog)
-  {
+  private void createFileUploadEventHandler(IUserDialog dialog) {
     IProcess process = dialog.getProcess(new NullProgressMonitor());
     Diagram diagram = process.getModel().getDiagram();
+
+    //upload files
     DiagramShape start = diagram.add().shape(HtmlDialogMethodStart.class).at(96, 260);
     DiagramShape end = diagram.add().shape(HtmlDialogEnd.class).at(224, 260);
     start.edges().connectTo(end);
@@ -114,88 +124,110 @@ class DialogWriter {
             + "ivy.case.documents().add(ivyFile.getPath()).write().withContentFrom(ivyFile);");
     startmethod.setParameterMappings(mc);
 
+    //delete files
+    start = diagram.add().shape(HtmlDialogMethodStart.class).at(96, 320);
+    end = diagram.add().shape(HtmlDialogEnd.class).at(224, 320);
+    start.edges().connectTo(end);
+    startmethod = start.getElement();
+    startmethod.setName("handleFileDelete");
+    methodInputParams = Arrays
+            .asList(new VariableDesc("docname", "java.lang.String"));
+    startmethod.setSignature(new CallSignature("handleFileDelete", methodInputParams, Arrays.asList()));
+
+    mc = startmethod.getParameterMappings();
+    mc = mc.setCode("import ch.ivyteam.ivy.workflow.document.Path;\n"
+            + "ivy.case.documents().delete(new Path(param.docname));");
+    startmethod.setParameterMappings(mc);
     process.save();
   }
 
-  private void writeDialogMasterFormPanel(List<ExpressTaskDefinition> tasks, StringBuffer formPanel)
-  {
-    for (int t = 0; t < tasks.size(); t++)
-    {
+  private void writeDialogMasterFormPanel(List<ExpressTaskDefinition> tasks, StringBuffer formPanel) {
+    for (int t = 0; t < tasks.size(); t++) {
       ExpressTaskDefinition taskdef = tasks.get(t);
       String componentName = StringUtil.toJavaIdentifier(taskdef.getSubject());
       String componentData = "data.processData." + componentName.toLowerCase();
+      String stepName = taskdef.getSubject();
 
-      formPanel.append(
-              "<p:fieldset legend=\"Form\" toggleable=\"true\" collapsed=\"false\" rendered=\"#{data.currentStep == "
-                      + t
-                      + " and data.parallelIndex == 0}\">\n");
-      formPanel.append("<b>"+taskdef.getDescription()+"</b><hr/>\n");
-      formPanel.append("<ic:" + ExpressWorkflowConverter.NAMESPACE + componentName + " data=\"#{" + componentData
-              + "}\" editable=\"true\"/>\n");
-      formPanel.append("</p:fieldset>\n");
-
-      for (int parallelInstance = 1; parallelInstance < taskdef.getResponsibles().size(); parallelInstance++)
+      if(!taskdef.getType().equals("EMAIL"))
       {
-        componentData = "data.processData." + componentName.toLowerCase() + (parallelInstance + 1);
         formPanel.append(
                 "<p:fieldset legend=\"Form\" toggleable=\"true\" collapsed=\"false\" rendered=\"#{data.currentStep == "
                         + t
-                        + " and data.parallelIndex == " + parallelInstance + "}\">\n");
-        formPanel.append("<b>"+taskdef.getDescription()+"</b><hr/>\n");
-        formPanel.append("<ic:" + ExpressWorkflowConverter.NAMESPACE + componentName + " data=\"#{" + componentData
-                + "}\" editable=\"true\"/>\n");
+                        + " and data.parallelIndex == 0}\">\n");
+        formPanel.append("<b>" + taskdef.getDescription() + "</b><hr/>\n");
+        formPanel.append(
+                "<ic:" + ExpressWorkflowConverter.NAMESPACE + componentName + " data=\"#{" + componentData
+                        + "}\" readonly=\"false\"/>\n");
         formPanel.append("</p:fieldset>\n");
+
+        for (int parallelInstance = 1; parallelInstance < taskdef.getResponsibles()
+                .size(); parallelInstance++) {
+          componentData = "data.processData." + componentName.toLowerCase() + (parallelInstance + 1);
+          formPanel.append(
+                  "<p:fieldset legend=\""+ stepName + "\" toggleable=\"true\" collapsed=\"false\" rendered=\"#{data.currentStep == "
+                          + t
+                          + " and data.parallelIndex == " + parallelInstance + "}\">\n");
+          formPanel.append("<b>" + taskdef.getDescription() + "</b><hr/>\n");
+          formPanel.append(
+                  "<ic:" + ExpressWorkflowConverter.NAMESPACE + componentName + " data=\"#{" + componentData
+                          + "}\" readonly=\"false\"/>\n");
+          formPanel.append("</p:fieldset>\n");
+        }
       }
     }
   }
 
-  private void writeDialogMasterStepPanel(List<ExpressTaskDefinition> tasks, StringBuffer stepsPanel)
-  {
-    for (int stepIndex = 0; stepIndex < tasks.size(); stepIndex++)
-    {
+  private void writeDialogMasterStepPanel(List<ExpressTaskDefinition> tasks, StringBuffer stepsPanel) {
+    for (int stepIndex = 0; stepIndex < tasks.size(); stepIndex++) {
       ExpressTaskDefinition taskdef = tasks.get(stepIndex);
 
-      String stepName = taskdef.getSubject();
-      String componentName = StringUtil.toJavaIdentifier(taskdef.getSubject());
-      String componentData = "data.processData." + componentName.toLowerCase();
-      String responsableName = "<b>Applikant:</b> #{" + componentData + ".wfuser}";
-
-      stepsPanel.append(
-              "<p:fieldset styleClass='finished-fieldset' toggleable='true' rendered='#{data.currentStep gt "
-                      + stepIndex + "}' collapsed='" + (stepIndex==0 ? "false" : "true")+"' legend='" + stepName + "'>\n");
-      stepsPanel.append(responsableName + "<hr/>\n");
-      stepsPanel
-              .append("<b>Form Details:</b><ic:" + ExpressWorkflowConverter.NAMESPACE + componentName + " data=\"#{" + componentData
-                      + "}\" editable=\"false\"/>\n");
-      stepsPanel.append("</p:fieldset>\n");
-
-      for (int parallelInstance = 1; parallelInstance < taskdef.getResponsibles().size(); parallelInstance++)
+      if(!taskdef.getType().equals("EMAIL"))
       {
-        componentData = "data.processData." + componentName.toLowerCase() + (parallelInstance + 1);
-        responsableName = "<b>Applikant</b><br/>Full name: #{" + componentData + ".wfuser}";
+        String stepName = taskdef.getSubject();
+        String componentName = StringUtil.toJavaIdentifier(taskdef.getSubject());
+        String componentData = "data.processData." + componentName.toLowerCase();
+        String responsableName = "<b>User:</b> #{" + componentData + ".wfuser}";
+        String collapseIt = (stepIndex == tasks.size()-1 ? "false" : "true"); // show last fieldset expanded
+
         stepsPanel.append(
                 "<p:fieldset styleClass='finished-fieldset' toggleable='true' rendered='#{data.currentStep gt "
-                        + stepIndex + "}' collapsed='true' legend='" + stepName + "'>\n");
-        stepsPanel.append("<p:panel styleClass='card'>" + responsableName + "<hr/>\n");
-        stepsPanel.append(
-                "<b>Form Details:</b><ic:" + ExpressWorkflowConverter.NAMESPACE + componentName + " data=\"#{" + componentData
-                        + "}\" editable=\"false\"/>\n");
-        stepsPanel.append("</p:panel></p:fieldset>\n");
+                        + stepIndex + "}' collapsed='"+ collapseIt +"' legend='"
+                        + stepName + "'>\n");
+        stepsPanel.append(responsableName + "<hr/>\n");
+        stepsPanel
+                .append("<b>Form:</b><ic:" + ExpressWorkflowConverter.NAMESPACE + componentName
+                        + " data=\"#{" + componentData
+                        + "}\" readonly=\"true\"/>\n");
+        stepsPanel.append("</p:fieldset>\n");
+
+        for (int parallelInstance = 1; parallelInstance < taskdef.getResponsibles()
+                .size(); parallelInstance++) {
+          componentData = "data.processData." + componentName.toLowerCase() + (parallelInstance + 1);
+          responsableName = "<b>User</b><br/>Full name: #{" + componentData + ".wfuser}";
+          stepsPanel.append(
+                  "<p:fieldset styleClass='finished-fieldset' toggleable='true' rendered='#{data.currentStep gt "
+                          + stepIndex + "}' collapsed='\"+ collapseIt +\"' legend='" + stepName + "'>\n");
+          stepsPanel.append("<p:panel styleClass='card'>" + responsableName + "<hr/>\n");
+          stepsPanel.append(
+                  "<b>Form:</b><ic:" + ExpressWorkflowConverter.NAMESPACE + componentName + " data=\"#{"
+                          + componentData
+                          + "}\" readonly=\"true\"/>\n");
+          stepsPanel.append("</p:panel></p:fieldset>\n");
+        }
       }
     }
   }
 
-  private void createDialogComponent(ExpressTaskDefinition taskdef,
-          List<VariableDesc> dataFields) throws ResourceDataModelException, IOException
-  {
+  private void createUserTaskDialogComponent(ExpressTaskDefinition taskdef,
+          List<VariableDesc> dataFields) throws ResourceDataModelException, IOException {
     List<ExpressFormElement> formElements = taskdef.getFormElements();
     var form = parseFormElements(formElements);
 
     var component = new FormComponent(StringUtil.toJavaIdentifier(taskdef.getSubject()));
     dataFields.add(new VariableDesc(component.name.toLowerCase(), component.dataClass));
-    for (int parallelInstance = 1; parallelInstance < taskdef.getResponsibles().size(); parallelInstance++)
-    {
-      var variable = new VariableDesc(component.name.toLowerCase() + (parallelInstance + 1), component.dataClass);
+    for (int parallelInstance = 1; parallelInstance < taskdef.getResponsibles().size(); parallelInstance++) {
+      var variable = new VariableDesc(component.name.toLowerCase() + (parallelInstance + 1),
+              component.dataClass);
       dataFields.add(variable);
     }
 
@@ -218,105 +250,161 @@ class DialogWriter {
             .createProjectUserDialog(params,
                     new NullProgressMonitor());
 
-    if (form.withFileUpload)
-    {
+    if (form.withFileUpload) {
       createFileUploadEventHandler(dialog);
     }
   }
 
-  private String buildTaskForm(ExpressTaskDefinition taskdef, Panels panels) throws IOException
-  {
+  private void createApprovalTaskDialogComponent(ExpressTaskDefinition taskdef,
+    List<VariableDesc> dataFields) throws ResourceDataModelException, IOException {
+    List<ExpressFormElement> formElements = new ArrayList<ExpressFormElement>();
+    ExpressFormElement approvalFormElement = new ExpressFormElement();
+    approvalFormElement.setElementID(StringUtil.toJavaIdentifier(taskdef.getResponsibleDisplayName()));
+    approvalFormElement.setElementPosition("HEADER");
+    approvalFormElement.setElementType("InputTextArea");
+    approvalFormElement.setIntSetting(0);
+    approvalFormElement.setName("Comment_of_approver");
+    approvalFormElement.setLabel("Comment of approver");
+    formElements.add(approvalFormElement);
+    ExpressFormElement approvalDecisionElement = new ExpressFormElement();
+    approvalDecisionElement.setElementID(StringUtil.toJavaIdentifier("Approval_"+taskdef.getResponsibleDisplayName()));
+    approvalDecisionElement.setElementPosition("FOOTER");
+    approvalDecisionElement.setElementType("OneRadio");
+    approvalDecisionElement.setOptionStrs(Arrays.asList("yes", "no"));
+    approvalDecisionElement.setIntSetting(0);
+    approvalDecisionElement.setName("Grant_of_approver");
+    approvalDecisionElement.setLabel("Grant approval");
+    approvalDecisionElement.setRequired(true);
+    formElements.add(approvalDecisionElement);
+    var form = parseFormElements(formElements);
+
+    var component = new FormComponent(StringUtil.toJavaIdentifier(taskdef.getSubject()));
+    dataFields.add(new VariableDesc(component.name.toLowerCase(), component.dataClass));
+    for (int parallelInstance = 1; parallelInstance < taskdef.getResponsibles().size(); parallelInstance++) {
+      var variable = new VariableDesc(component.name.toLowerCase() + (parallelInstance + 1),
+              component.dataClass);
+      dataFields.add(variable);
+    }
+
+    var panels = form.panels;
+    String viewForm = buildTaskForm(taskdef, panels);
+
+    List<VariableDesc> inputParameters = Arrays.asList(new VariableDesc("data", component.dataClass));
+    List<VariableDesc> outputParameters = Arrays.asList(new VariableDesc("data", component.dataClass));
+    CallSignature dlgCallSigature = new CallSignature("start", inputParameters, outputParameters);
+
+    List<Mapping> paramMappings = Arrays.asList(new Mapping("out", "param.data"));
+    List<Mapping> resultMappings = Arrays.asList(new Mapping("result.data", "in"),
+            new Mapping("result.data.wfuser",
+                    "in.wfuser.isEmpty() ? ivy.session.getSessionUserName() : in.wfuser"));
+
+    DialogCreationParameters params = new DialogCreationParameters.Builder(project, component.qualifiedName)
+            .viewContent(viewForm).dataClassFields(form.dialogDataFields).calleeParamMappings(paramMappings)
+            .calleeResultMappings(resultMappings).signature(dlgCallSigature).toCreationParams();
+   IUserDialogManager.instance().getProjectDataModelFor(project)
+            .createProjectUserDialog(params,
+                    new NullProgressMonitor());
+}
+
+
+  private String buildTaskForm(ExpressTaskDefinition taskdef, Panels panels) throws IOException {
     String template = "";
     try (InputStream is = ExpressWorkflowConverter.class
-            .getResourceAsStream("component_template.xhtml"))
-    {
+            .getResourceAsStream("component_template.xhtml")) {
       template = new String(is.readAllBytes())
-       .replace("${headerpanelfields}", panels.header.toString())
-       .replace("${leftpanelfields}", panels.left.toString())
-       .replace("${rightpanelfields}", panels.right.toString())
-       .replace("${footerpanelfields}", panels.footer.toString())
-       .replace("${tasktitle}", taskdef.getSubject())
-       .replace("${taskdescription}", "" + taskdef.getDescription());
+              .replace("${headerpanelfields}", panels.header.toString())
+              .replace("${leftpanelfields}", panels.left.toString())
+              .replace("${rightpanelfields}", panels.right.toString())
+              .replace("${footerpanelfields}", panels.footer.toString())
+              .replace("${tasktitle}", taskdef.getSubject())
+              .replace("${taskdescription}", "" + taskdef.getDescription());
     }
     return template;
   }
 
-  private FormParseResult parseFormElements(List<ExpressFormElement> formElements) throws IOException
-  {
+  private FormParseResult parseFormElements(List<ExpressFormElement> formElements) throws IOException {
     var result = new FormParseResult();
     result.dialogDataFields.add(new VariableDesc("wfuser", "java.lang.String"));
-    for (ExpressFormElement formElement : formElements)
-    {
-      String datafield = StringUtil.toJavaIdentifier(formElement.getLabel().replace(":", ""));
 
-      if (formElement.getElementType().equals("ManyCheckbox"))
-      {
-        result.dialogDataFields
-                .add(new VariableDesc(datafield, "ch.ivyteam.ivy.scripting.objects.List<java.lang.String>"));
-      }
-      else
-      {
-        result.dialogDataFields.add(new VariableDesc(datafield, "java.lang.String"));
-      }
-      result.withFileUpload = result.withFileUpload || formElement.getElementType().equals("FileUpload");
+    if (formElements != null) {
+      for (ExpressFormElement formElement : formElements) {
+        String datafield = StringUtil.toJavaIdentifier(formElement.getLabel().replace(":", ""));
 
-      switch (formElement.getElementPosition())
-      {
-        case "HEADER":
-          writeFormElement(result.panels.header, formElement, datafield);
-          break;
-        case "LEFTPANEL":
-          writeFormElement(result.panels.left, formElement, datafield);
-          break;
-        case "RIGHTPANEL":
-          writeFormElement(result.panels.right, formElement, datafield);
-          break;
-        case "FOOTER":
-          writeFormElement(result.panels.footer, formElement, datafield);
+        if (formElement.getElementType().equals("ManyCheckbox")) {
+          result.dialogDataFields
+                  .add(new VariableDesc(datafield,
+                          "ch.ivyteam.ivy.scripting.objects.List<java.lang.String>"));
+          }
+          else if (formElement.getElementType().equals("InputFieldDate")) {
+            result.dialogDataFields.add(new VariableDesc(datafield, "ch.ivyteam.ivy.scripting.objects.Date"));
+          }
+          else {
+          result.dialogDataFields.add(new VariableDesc(datafield, "java.lang.String"));
+        }
+        result.withFileUpload = result.withFileUpload || formElement.getElementType().equals("FileUpload");
+
+        switch (formElement.getElementPosition()) {
+          case "HEADER":
+            writeFormElement(result.panels.header, formElement, datafield);
+            break;
+          case "LEFTPANEL":
+            writeFormElement(result.panels.left, formElement, datafield);
+            break;
+          case "RIGHTPANEL":
+            writeFormElement(result.panels.right, formElement, datafield);
+            break;
+          case "FOOTER":
+            writeFormElement(result.panels.footer, formElement, datafield);
+        }
       }
     }
     return result;
   }
 
   private void writeFormElement(StringBuffer sb, ExpressFormElement formElement, String datafield)
-          throws IOException
-  {
-    if (sb.length() > 1)
-    {
-      sb.append("<br/><br/>");
-    }
-    sb.append("<p:outputLabel value='" + formElement.getLabel() + "' for='"+datafield+"'/>\n");
+          throws IOException {
+    sb.append("<p:outputLabel value='" + formElement.getLabel() + "' for='" + datafield + "'/>\n");
 
-    switch (formElement.getElementType())
-    {
+    switch (formElement.getElementType()) {
       case "InputFieldText":
-        sb.append("<p:inputText id='"+datafield+"' value='#{data." + datafield + "}' required='"+formElement.isRequired()+"'/>\n");
+        sb.append("<p:inputText id='" + datafield + "' value='#{data." + datafield + "}' required='"
+                + formElement.isRequired() + "' readonly='#{cc.attrs.readonly}'/>\n");
+        break;
+      case "InputFieldNumber":
+        sb.append("<p:spinner id='" + datafield + "' value='#{data." + datafield + "}' min=\"0\" decimalPlaces=\"0\" required='"
+                + formElement.isRequired() + "' disabled='#{cc.attrs.readonly}'/>\n");
+        break;
+      case "InputFieldDate":
+        sb.append("<p:datePicker id='" + datafield + "' value='#{data." + datafield + "}' pattern='dd.MM.yyyy' showIcon='true' required='"
+                + formElement.isRequired() + "' disabled='#{cc.attrs.readonly}'>\n  <f:convertDateTime pattern='dd.MM.yyyy' />\n</p:datePicker>");
         break;
       case "InputTextArea":
-        sb.append("<p:inputTextarea id='"+datafield+"'  value='#{data." + datafield + "}' required='"+formElement.isRequired()+"'/>\n");
+        sb.append("<p:inputTextarea id='" + datafield + "'  value='#{data." + datafield + "}' required='"
+                + formElement.isRequired() + "' readonly='#{cc.attrs.readonly}'/>\n");
         break;
       case "ManyCheckbox":
-        sb.append("<p:selectManyCheckbox id='"+datafield+"' value='#{data." + datafield + "}' layout='grid' columns='1'>\n");
+        sb.append("<p:selectManyCheckbox id='" + datafield + "' value='#{data." + datafield
+                + "}' layout='grid' columns='1' disabled='#{cc.attrs.readonly}'>\n");
         List<String> opts = formElement.getOptionStrs();
-        for (String option : opts)
-        {
+        for (String option : opts) {
           sb.append("<f:selectItem itemLabel='" + option + "' itemValue='" + option + "' />\n");
         }
         sb.append("</p:selectManyCheckbox>");
         break;
       case "OneRadio":
-        sb.append("<p:selectOneRadio id='"+datafield+"' value='#{data." + datafield + "}' layout='grid' columns='1'>\n");
+        sb.append("<p:selectOneRadio id='" + datafield + "' value='#{data." + datafield + "}'  required='"
+                + formElement.isRequired() +"' layout='grid' columns='2' disabled='#{cc.attrs.readonly}'>\n");
         List<String> options = formElement.getOptionStrs();
-        for (String option : options)
-        {
+        for (String option : options) {
           sb.append("<f:selectItem itemLabel='" + option + "' itemValue='" + option + "' />\n");
         }
         sb.append("</p:selectOneRadio>");
         break;
       case "FileUpload":
-        try(InputStream is = ExpressWorkflowConverter.class.getResourceAsStream("fileupload_template.xhtml")){
+        try (InputStream is = ExpressWorkflowConverter.class
+                .getResourceAsStream("fileupload_template.xhtml")) {
           String fileuploadTemplate = new String(is.readAllBytes())
-             .replace("${fieldname}", datafield);
+                  .replace("${fieldname}", datafield);
           sb.append(fileuploadTemplate);
         }
     }
