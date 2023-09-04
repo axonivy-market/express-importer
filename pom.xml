@@ -3,7 +3,7 @@
   <groupId>com.axonivy.portal.express</groupId>
   <name>express-importer</name>
   <artifactId>express-importer-modules</artifactId>
-  <version>10.0.4-SNAPSHOT</version>
+  <version>10.0.5-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
