@@ -7,13 +7,16 @@
 	<p:column headerText="File size">
 		<h:outputText value="#{doc.size}" />
 	</p:column>
-	<p:column headerText="Download">
-		<a href="#{ivy.html.fileref(doc.path, false)}"><i
+	<p:column headerText="Functions">
+		<a href="#{ivy.html.fileref(doc.path, false)}" target="_blank"><i
 			class="si si-download-bottom"></i></a>
+			<p:spacer width="5"/>
+		<p:commandLink actionListener="#{logic.handleFileDelete(doc.name)}" process="@this" update="ha_give_me_a_file" 
+			 rendered="#{cc.attrs.readonly eq 'false'}" ><i class="si si-bin-1"></i></p:commandLink>
 	</p:column>
 </p:dataTable>
 <br />
 <p:fileUpload value="#{data.${fieldname}}" mode="simple"
 	skinSimple="true" auto="true" process="@this" update="${fieldname}"
-	label="Add new file" listener="#{logic.handleFileUpload}"
-	styleClass="command-btns" rendered="#{cc.attrs.editable}" />
+	label="Upload new file" listener="#{logic.handleFileUpload}"
+	rendered="#{cc.attrs.readonly eq 'false'}" />

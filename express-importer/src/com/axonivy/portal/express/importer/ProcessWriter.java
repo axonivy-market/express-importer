@@ -9,12 +9,19 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import ch.ivyteam.ivy.process.IProjectProcessManager;
+import ch.ivyteam.ivy.process.model.NodeElement;
 import ch.ivyteam.ivy.process.model.diagram.Diagram;
 import ch.ivyteam.ivy.process.model.diagram.shape.DiagramShape;
+import ch.ivyteam.ivy.process.model.element.activity.EMail;
 import ch.ivyteam.ivy.process.model.element.activity.UserTask;
 import ch.ivyteam.ivy.process.model.element.activity.value.dialog.UserDialogId;
 import ch.ivyteam.ivy.process.model.element.activity.value.dialog.UserDialogStart;
+import ch.ivyteam.ivy.process.model.element.activity.value.email.Attachments;
+import ch.ivyteam.ivy.process.model.element.activity.value.email.Headers;
+import ch.ivyteam.ivy.process.model.element.activity.value.email.MailContentType;
 import ch.ivyteam.ivy.process.model.element.event.end.TaskEnd;
 import ch.ivyteam.ivy.process.model.element.event.start.RequestStart;
 import ch.ivyteam.ivy.process.model.element.event.start.value.CallSignature;
@@ -22,6 +29,7 @@ import ch.ivyteam.ivy.process.model.element.event.start.value.StartAccessPermiss
 import ch.ivyteam.ivy.process.model.element.gateway.TaskSwitchGateway;
 import ch.ivyteam.ivy.process.model.element.value.CaseConfig;
 import ch.ivyteam.ivy.process.model.element.value.IvyScriptExpression;
+import ch.ivyteam.ivy.process.model.element.value.MacroExpression;
 import ch.ivyteam.ivy.process.model.element.value.Mapping;
 import ch.ivyteam.ivy.process.model.element.value.Mappings;
 import ch.ivyteam.ivy.process.model.element.value.task.Activator;
@@ -71,7 +79,7 @@ class ProcessWriter {
         x += GRID_X;
 
         DiagramShape current = execDiagram.add().shape(UserTask.class).at(x, y - GRID_Y / 2);
-        createUserTask(taskdef, current, dataclassName, isfirstTask, 0);
+        createUserTask(processname, taskdef, current, dataclassName, isfirstTask, 0);
         isfirstTask = false;
         split.edges().connectTo(current); // connect
 
@@ -84,7 +92,7 @@ class ProcessWriter {
         {
           DiagramShape more = execDiagram.add().shape(UserTask.class).at(x - GRID_X,
                   y + nb * GRID_Y - GRID_Y / 2);
-          createUserTask(taskdef, more, dataclassName, isfirstTask, nb);
+          createUserTask(processname, taskdef, more, dataclassName, isfirstTask, nb);
           isfirstTask = false;
 
           split.edges().connectTo(more); // connect
@@ -98,15 +106,23 @@ class ProcessWriter {
       }
       else
       {
-        DiagramShape current = execDiagram.add().shape(UserTask.class).at(x, y);
-        createUserTask(taskdef, current, dataclassName, isfirstTask, 0);
+        DiagramShape current;
+        if(taskdef.getType().equals("EMAIL"))
+        {
+          current = addShape(execDiagram, EMail.class , x, y);
+          createEmailTask(taskdef, current);
+        }
+        else
+        {
+          current = addShape(execDiagram, UserTask.class, x, y);
+          createUserTask(processname, taskdef, current, dataclassName, isfirstTask, 0);
+        }
         isfirstTask = false;
         previous.edges().connectTo(current); // connect
         if (previous.representsInstanceOf(TaskSwitchGateway.class))
         {
           createSystemTaskGateway(manager, dataFields, previous);
         }
-
         previous = current;
       }
     }
@@ -170,7 +186,12 @@ class ProcessWriter {
     return sb.toString();
   }
 
-  private void createUserTask(ExpressTaskDefinition taskdef, DiagramShape current,
+  private DiagramShape addShape(Diagram execDiagram, Class<? extends NodeElement> childToAdd, int x, int y)
+  {
+    return execDiagram.add().shape(childToAdd).at(x, y);
+  }
+
+  private void createUserTask(String processName, ExpressTaskDefinition taskdef, DiagramShape current,
           String dataclassName,
           boolean isfirstTask, int index)
   {
@@ -208,11 +229,32 @@ class ProcessWriter {
     List<VariableDesc> outputParameters = Arrays.asList(new VariableDesc("data", dataclassName));
     CallSignature callSigature = new CallSignature("start", inputParameters, outputParameters);
     UserDialogStart userDialogStart = usertask.getTargetDialog()
-            .setId(UserDialogId.create(ExpressWorkflowConverter.NAMESPACE + StringUtil.toJavaIdentifier("TaskDialog")))
+            .setId(UserDialogId.create(ExpressWorkflowConverter.NAMESPACE + StringUtil.toJavaIdentifier(processName+"TaskDialog")))
             .setStartMethod(callSigature);
     usertask.setTargetDialog(userDialogStart);
     usertask.setParameters(MappingCode.mapOnly("param.data", "in"));
     usertask.setOutput(MappingCode.mapOnly("out", "result.data"));
+  }
+
+  private void createEmailTask(ExpressTaskDefinition taskdef, DiagramShape current)
+  {
+    current.getLabel().setText("Information E-mail");
+
+    EMail mailstep = current.getElement();
+    mailstep.setName("Information E-mail");
+    mailstep.setContentType(MailContentType.HTML);
+    Headers headers = new Headers()
+                     .setSubject(new MacroExpression(taskdef.getEmail().getSubject()))
+                     .setTo(new MacroExpression(taskdef.getEmail().getRecipients()))
+                     .setReplyTo(new MacroExpression(taskdef.getEmail().getResponseTo()));
+    mailstep.setHeaders(headers);
+    mailstep.setMessage(new MacroExpression(taskdef.getEmail().getContent()));
+    Attachments attachments = new Attachments();
+    for (JsonNode attachment: taskdef.getEmail().getAttachments())
+    {
+      attachments = attachments.add((new IvyScriptExpression(attachment.get("name").toString())));
+    }
+    mailstep.setAttachments(attachments);
   }
 
   private void createFinalReviewTask(DiagramShape finalreviewtask, String processname,
@@ -227,7 +269,7 @@ class ProcessWriter {
 
     TaskConfig taskConfig = usertask.getTaskConfig();
     taskConfig = taskConfig.setName(processname + ": Final Review");
-    taskConfig.setDescription("The workflow " + processname + " has been finsihed");
+    taskConfig = taskConfig.setDescription("The workflow " + processname + " has been finsihed");
     taskConfig = taskConfig.setActivator(new Activator("CREATOR", ActivatorType.ROLE));
 
     List<CustomField> customFields = taskConfig.getCustomFields();
@@ -240,7 +282,7 @@ class ProcessWriter {
     List<VariableDesc> outputParameters = Arrays.asList(new VariableDesc("data", dataclassName));
     CallSignature callSigature = new CallSignature("start", inputParameters, outputParameters);
     UserDialogStart userDialogStart = usertask.getTargetDialog()
-            .setId(UserDialogId.create(ExpressWorkflowConverter.NAMESPACE + StringUtil.toJavaIdentifier("TaskDialog")))
+            .setId(UserDialogId.create(ExpressWorkflowConverter.NAMESPACE + StringUtil.toJavaIdentifier(processname+"TaskDialog")))
             .setStartMethod(callSigature);
     usertask.setTargetDialog(userDialogStart);
     usertask.setParameters(MappingCode.mapOnly("param.data", "in"));
