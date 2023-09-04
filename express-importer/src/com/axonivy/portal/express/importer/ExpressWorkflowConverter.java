@@ -65,7 +65,7 @@ public class ExpressWorkflowConverter {
     writer.drawElements(
       expressProcess.getTaskDefinitions(),
       diagram,
-      expressProcess.getProcessName(),
+      processName,
       dataclassName,
       dataFields);
     process.save();

@@ -7,7 +7,7 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:pe="http://primefaces.org/ui/extensions">
 <cc:interface componentType="IvyComponent">
-	<cc:attribute name="editable"></cc:attribute>
+	<cc:attribute name="readonly"></cc:attribute>
 </cc:interface>
 <cc:implementation>
 	<style>
@@ -15,26 +15,36 @@
 			border: 0px;
 			padding: 0px;
 		}
+		input.ui-spinner-input {
+		  text-align: left;
+		}
+		.ui-spinner {
+		  width: 100%;
+		}
+		.p-datepicker {
+		  width: 100%;
+		}
 		.container td {
 			padding: 0px;
 		}
-	</style>
-	<p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank">
+  </style>
+  <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" style="width:100%"
+    columnClasses="ui-g-12 ui-md-12 ui-lg-12, ui-g-12 ui-md-12 ui-lg-12, ui-g-12 ui-md-12 ui-lg-12, ui-g-12 ui-md-12 ui-lg-12">
 		<p:panel styleClass="panel_blank">
 		${headerpanelfields}
 		</p:panel>
 	</p:panelGrid>
-	<p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank"
-		columnClasses="ui-g-12 ui-md-6 ui-lg-6, ui-g-12 ui-md-6 ui-lg-6, ui-g-12 ui-md-6 ui-lg-6, ui-g-12 ui-md-6 ui-lg-6">
-		<p:panel styleClass="panel_blank">
-		${leftpanelfields}
-		</p:panel>
-		<p:panel styleClass="panel_blank">
-		${rightpanelfields}
-		</p:panel>
-	</p:panelGrid>
-	<p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank">
-		<p:panel styleClass="panel_blank">
+	<p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank">
+	  <p:panel styleClass="panel_blank">
+			${leftpanelfields}
+			</p:panel>
+	  <p:panel styleClass="panel_blank">
+			${rightpanelfields}
+			</p:panel>
+		</p:panelGrid>
+  <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" style="width:100%"
+    columnClasses="ui-g-12 ui-md-12 ui-lg-12, ui-g-12 ui-md-12 ui-lg-12, ui-g-12 ui-md-12 ui-lg-12, ui-g-12 ui-md-12 ui-lg-12">
+    <p:panel styleClass="panel_blank">
           ${footerpanelfields}		
 		</p:panel>
 	</p:panelGrid>
