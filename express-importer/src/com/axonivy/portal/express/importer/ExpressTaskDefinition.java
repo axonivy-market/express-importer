@@ -1,10 +1,10 @@
 package com.axonivy.portal.express.importer;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.JsonNode;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ExpressTaskDefinition implements Serializable {
@@ -17,7 +17,7 @@ public class ExpressTaskDefinition implements Serializable {
   private int taskPosition;
   private int untilDays;
   private String responsibleDisplayName;
-  private JsonNode email;
+  private ExpressEmail email;
   private List<ExpressFormElement> formElements;
 
   public String getType() {
@@ -29,7 +29,7 @@ public class ExpressTaskDefinition implements Serializable {
   }
 
   public List<String> getResponsibles() {
-    return responsibles;
+	  return responsibles == null ? new ArrayList<String>() : responsibles;
   }
 
   public void setResponsibles(List<String> responsibles) {
@@ -45,7 +45,7 @@ public class ExpressTaskDefinition implements Serializable {
   }
 
   public String getDescription() {
-    return description;
+	  return description == null ? "" : description;
   }
 
   public void setDescription(String description) {
@@ -76,11 +76,11 @@ public class ExpressTaskDefinition implements Serializable {
     this.responsibleDisplayName = responsibleDisplayName;
   }
 
-  public JsonNode getEmail() {
+  public ExpressEmail getEmail() {
     return email;
   }
 
-  public void setEmail(JsonNode email) {
+  public void setEmail(ExpressEmail email) {
     this.email = email;
   }
 
