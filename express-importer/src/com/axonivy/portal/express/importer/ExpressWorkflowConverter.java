@@ -35,7 +35,7 @@ public class ExpressWorkflowConverter {
     JsonNode node = root.get("expressWorkflow");
     String wf = MAPPER.writeValueAsString(node);
     List<ExpressProcess> expressProcessEntities = BusinessEntityConverter
-       .jsonValueToEntities(wf, ExpressProcess.class);
+            .jsonValueToEntities(wf, ExpressProcess.class);
     for (ExpressProcess expressProcess : expressProcessEntities) {
       writeProcess(expressProcess);
     }
@@ -50,24 +50,25 @@ public class ExpressWorkflowConverter {
     List<VariableDesc> dataFields = new ArrayList<VariableDesc>();
     String processName = StringUtil.toJavaIdentifier(expressProcess.getProcessName());
     String dataclassName = NAMESPACE + processName + "Data";
-    new DialogWriter(project).createDialogs(expressProcess.getTaskDefinitions(), dataFields, dataclassName, processName);
+    new DialogWriter(project).createDialogs(expressProcess.getTaskDefinitions(), dataFields, dataclassName,
+            processName);
     ProcessCreator creator = ProcessCreator.create(project, processName)
-      .kind(ProcessKind.NORMAL)
-      .namespace("")
-      .dataClassName(dataclassName)
-      .createDefaultContent(false)
-      .dataClassFields(dataFields)
-      .toCreator();
+            .kind(ProcessKind.NORMAL)
+            .namespace("")
+            .dataClassName(dataclassName)
+            .createDefaultContent(false)
+            .dataClassFields(dataFields)
+            .toCreator();
     creator.createDataModel();
     process = creator.getCreatedProcess();
     Diagram diagram = process.getModel().getDiagram();
     ProcessWriter writer = new ProcessWriter(project);
     writer.drawElements(
-      expressProcess.getTaskDefinitions(),
-      diagram,
-      processName,
-      dataclassName,
-      dataFields);
+            expressProcess.getTaskDefinitions(),
+            diagram,
+            processName,
+            dataclassName,
+            dataFields);
     process.save();
     writer.refreshTree();
   }

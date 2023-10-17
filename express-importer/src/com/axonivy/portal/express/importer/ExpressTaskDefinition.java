@@ -29,7 +29,7 @@ public class ExpressTaskDefinition implements Serializable {
   }
 
   public List<String> getResponsibles() {
-	  return responsibles == null ? new ArrayList<String>() : responsibles;
+    return responsibles == null ? new ArrayList<String>() : responsibles;
   }
 
   public void setResponsibles(List<String> responsibles) {
@@ -45,7 +45,7 @@ public class ExpressTaskDefinition implements Serializable {
   }
 
   public String getDescription() {
-	  return description == null ? "" : description;
+    return description == null ? "" : description;
   }
 
   public void setDescription(String description) {
