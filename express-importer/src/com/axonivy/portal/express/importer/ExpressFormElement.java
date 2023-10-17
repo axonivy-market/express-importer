@@ -66,7 +66,7 @@ public class ExpressFormElement implements Serializable {
   public void setElementType(String elementType) {
     this.elementType = elementType;
   }
-  
+
   public String getElementPosition() {
     return elementPosition;
   }
@@ -91,5 +91,3 @@ public class ExpressFormElement implements Serializable {
     this.indexInPanel = indexInPanel;
   }
 }
-
-

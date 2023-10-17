@@ -52,7 +52,6 @@ public class ExpressProcess implements Serializable {
     this.isPublic = isPublic;
   }
 
-
   public String getProcessName() {
     return processName;
   }
@@ -148,8 +147,4 @@ public class ExpressProcess implements Serializable {
   public void setTaskDefinitions(List<ExpressTaskDefinition> taskDefinitions) {
     this.taskDefinitions = taskDefinitions;
   }
-
-
 }
-
-

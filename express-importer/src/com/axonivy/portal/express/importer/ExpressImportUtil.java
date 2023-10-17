@@ -16,7 +16,8 @@ final class ExpressImportUtil {
   static final String DEFAULT_EXTENSION = ".json";
   static final String[] IMPORT_TYPE = new String[] {"*" + DEFAULT_EXTENSION};
   static final String DESTINATION_KEY = "Destinations";
-  static final String DEFAULT_FILTER_PATH = javax.swing.filechooser.FileSystemView.getFileSystemView().getDefaultDirectory().getAbsolutePath();
+  static final String DEFAULT_FILTER_PATH = javax.swing.filechooser.FileSystemView.getFileSystemView()
+          .getDefaultDirectory().getAbsolutePath();
 
   static List<String> getIvyProjectNames() {
     return IIvyProjectManager.instance().getIvyProjects().stream()
@@ -27,15 +28,13 @@ final class ExpressImportUtil {
 
   static IIvyProject getFirstNonImmutableIvyProject(IStructuredSelection selection) {
     if (selection == null) {
-     return null;
+      return null;
     }
-
     for (var localIterator = selection.toList().iterator(); localIterator.hasNext();) {
       var selectedObject = localIterator.next();
       if (selectedObject == null) {
         continue;
       }
-
       IIvyProject project = null;
       if (selectedObject instanceof IResource) {
         project = IvyProjectNavigationUtil.getIvyProject((IResource) selectedObject);

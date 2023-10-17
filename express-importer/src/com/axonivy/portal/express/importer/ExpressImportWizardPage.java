@@ -26,11 +26,9 @@ import ch.ivyteam.swt.dialogs.SwtCommonDialogs;
 public class ExpressImportWizardPage extends WizardPage implements IWizardPage, Listener {
 
   static final String PAGE_ID = "Import";
-
   private Combo destinationNameField;
   private Combo sourceProjectField;
   private Button destinationBrowseButton;
-
   private final ExpressImportProcessor processor;
 
   public ExpressImportWizardPage(ExpressImportProcessor processor) {
@@ -47,28 +45,21 @@ public class ExpressImportWizardPage extends WizardPage implements IWizardPage, 
     layout.numColumns = 3;
     group.setLayout(layout);
     group.setLayoutData(new GridData(272));
-
     Label sourceLabel = new Label(group, 0);
     sourceLabel.setText("Project");
-
     this.sourceProjectField = new Combo(group, 2060);
-
     GridData data = new GridData(768);
-
     data.widthHint = 250;
     data.horizontalSpan = 2;
     sourceProjectField.setLayoutData(data);
-
     for (String projectName : ExpressImportUtil.getIvyProjectNames()) {
       sourceProjectField.add(projectName);
     }
     sourceProjectField.setText(processor.getSelectedSourceProjectName());
     sourceProjectField.addListener(24, this);
     sourceProjectField.addListener(13, this);
-
     Label destinationLabel = new Label(group, 0);
     destinationLabel.setText("From file");
-
     destinationNameField = new Combo(group, 2052);
     String[] destinations = getDialogSettings().getArray(ExpressImportUtil.DESTINATION_KEY);
     if (destinations != null) {
@@ -80,14 +71,11 @@ public class ExpressImportWizardPage extends WizardPage implements IWizardPage, 
         }
       }
     }
-
     destinationNameField.addListener(24, this);
     destinationNameField.addListener(13, this);
     data = new GridData(768);
-
     data.widthHint = 250;
     destinationNameField.setLayoutData(data);
-
     destinationBrowseButton = new Button(group, 8);
     destinationBrowseButton.setText("Browse ...");
     destinationBrowseButton.addListener(13, this);
@@ -117,9 +105,7 @@ public class ExpressImportWizardPage extends WizardPage implements IWizardPage, 
     var status = WizardStatus.createOkStatus();
     status.merge(processor.setImportFile(destinationNameField.getText()));
     status.merge(processor.setSource(this.sourceProjectField.getText()));
-
     setPageComplete(status.isLowerThan(WizardStatus.ERROR));
-
     if (status.isOk()) {
       setMessage(processor.getWizardPageOkMessage(PAGE_ID), 0);
     } else if (status.isFatal()) {
@@ -154,7 +140,6 @@ public class ExpressImportWizardPage extends WizardPage implements IWizardPage, 
     String currentSourceString = destinationNameField.getText();
     dialog.setFilterPath(currentSourceString);
     String selectedFileName = dialog.open();
-
     if (selectedFileName != null) {
       destinationNameField.setText(selectedFileName);
     }
@@ -162,7 +147,8 @@ public class ExpressImportWizardPage extends WizardPage implements IWizardPage, 
 
   private boolean executeImport() {
     if (destinationNameField.getText().lastIndexOf(File.separator) == -1) {
-      destinationNameField.setText(ExpressImportUtil.DEFAULT_FILTER_PATH + File.separator + destinationNameField.getText());
+      destinationNameField.setText(
+              ExpressImportUtil.DEFAULT_FILTER_PATH + File.separator + destinationNameField.getText());
       processor.setImportFile(destinationNameField.getText());
     }
     try {
@@ -173,12 +159,12 @@ public class ExpressImportWizardPage extends WizardPage implements IWizardPage, 
       SwtCommonDialogs.openBugDialog(getControl(), e.getTargetException());
       return false;
     }
-
     var status = processor.getStatus();
     if (status.isOK()) {
       SwtCommonDialogs.openInformationDialog(getShell(), "Express Workflow", "Successfully imported");
     } else {
-      SwtCommonDialogs.openErrorDialog(getContainer().getShell(), "Problems during import of Express Workflow", status.getMessage(), status.getException());
+      SwtCommonDialogs.openErrorDialog(getContainer().getShell(),
+              "Problems during import of Express Workflow", status.getMessage(), status.getException());
       return false;
     }
     return true;

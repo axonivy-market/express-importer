@@ -18,13 +18,20 @@ import ch.ivyteam.log.Logger;
 public class BusinessEntityConverter {
 
   private static final Logger LOGGER = Logger.getLogger(BusinessEntityConverter.class);
-  public static ObjectMapper objectMapper;
+  private static final ObjectMapper MAPPER = objectMapper();
+
+  private static ObjectMapper objectMapper() {
+    return JsonMapper.builder()
+      .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+      .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
+      .build();
+  }
 
   public BusinessEntityConverter() {}
 
   public static String entityToJsonValue(Object entity) {
     try {
-      return getObjectMapper().writeValueAsString(entity);
+      return MAPPER.writeValueAsString(entity);
     } catch (JsonProcessingException e) {
       LOGGER.error("Can't write json value", e);
       throw new ExpressImportException(e);
@@ -33,7 +40,7 @@ public class BusinessEntityConverter {
 
   public static <T> T jsonValueToEntity(String jsonValue, Class<T> classType) {
     try {
-      return getObjectMapper().readValue(jsonValue, classType);
+      return MAPPER.readValue(jsonValue, classType);
     } catch (IOException e) {
       LOGGER.error("Can't read json value", e);
       throw new ExpressImportException(e);
@@ -45,8 +52,8 @@ public class BusinessEntityConverter {
       return new ArrayList<>();
     }
     try {
-      CollectionType type = getObjectMapper().getTypeFactory().constructCollectionType(List.class, classType);
-      return getObjectMapper().readValue(jsonValue, type);
+      CollectionType type = MAPPER.getTypeFactory().constructCollectionType(List.class, classType);
+      return MAPPER.readValue(jsonValue, type);
     } catch (IOException e) {
       LOGGER.error("Can't read json value", e);
       throw new ExpressImportException(e);
@@ -54,16 +61,7 @@ public class BusinessEntityConverter {
   }
 
   public static <T> T convertValue(Object fromValue, Class<T> toValueType) {
-    return getObjectMapper().convertValue(fromValue, toValueType);
+    return MAPPER.convertValue(fromValue, toValueType);
   }
 
-  public static ObjectMapper getObjectMapper() {
-    if (objectMapper == null) {
-      objectMapper = JsonMapper.builder()
-        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
-        .build();
-    }
-    return objectMapper;
-  }
 }
