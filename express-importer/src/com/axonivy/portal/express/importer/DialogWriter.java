@@ -83,7 +83,7 @@ class DialogWriter {
 						"ivy.task.customFields().numberField(\"parallelindex\").getOrDefault(0)"));
 		List<Mapping> resultMappings = Arrays.asList(new Mapping("result.data", "in.processData"));
 
-		var ivyProject = IvyProjectNavigationUtil.getIvyProject(project);
+		var ivyProject =  IvyProjectNavigationUtil.getIvyProject(project);
 		IViewTechnologyDesignerUi viewTech = ViewTechnologyDesignerUiRegistry.getInstance()
 				.getViewTechnology(JsfViewTechnologyConfiguration.TECHNOLOGY_IDENTIFIER);
 		viewTech.getViewLayoutProvider().getViewLayouts(ivyProject).get(0)
