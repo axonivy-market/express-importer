@@ -23,7 +23,7 @@ import ch.ivyteam.ivy.process.model.element.value.Mapping;
 import ch.ivyteam.ivy.process.model.value.MappingCode;
 import ch.ivyteam.ivy.process.model.value.scripting.VariableDesc;
 import ch.ivyteam.ivy.process.rdm.IProcess;
-import ch.ivyteam.ivy.project.IvyProjectNavigationUtil;
+import ch.ivyteam.ivy.project.IIvyProject;
 import ch.ivyteam.ivy.resource.datamodel.ResourceDataModelException;
 import ch.ivyteam.util.StringUtil;
 
@@ -79,7 +79,7 @@ class DialogWriter {
             new Mapping("out.parallelIndex",
                     "ivy.task.customFields().numberField(\"parallelindex\").getOrDefault(0)"));
     List<Mapping> resultMappings = Arrays.asList(new Mapping("result.data", "in.processData"));
-    var ivyProject = IvyProjectNavigationUtil.getIvyProject(project);
+    var ivyProject = IIvyProject.of(project).project();
     IViewTechnologyDesignerUi viewTech = ViewTechnologyDesignerUiRegistry.getInstance()
             .getViewTechnology(JsfViewTechnologyConfiguration.TECHNOLOGY_IDENTIFIER);
     viewTech.getViewLayoutProvider().getViewLayouts(ivyProject).get(0)

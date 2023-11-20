@@ -13,6 +13,8 @@ Require-Bundle: ch.ivyteam.ivy.process.rdm,
  ch.ivyteam.lib.apache.commons.text,
  ch.ivyteam.util.io,
  ch.ivyteam.ivy.runtime.env,
- ch.ivyteam.ivy.project
+ ch.ivyteam.ivy.project,
+ ch.ivyteam.ivy.filesystem,
+ ch.ivyteam.ivy.dialog.view
 Bundle-ClassPath: .
 Bundle-ActivationPolicy: lazy
