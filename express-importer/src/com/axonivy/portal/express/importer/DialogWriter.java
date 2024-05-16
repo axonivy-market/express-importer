@@ -8,12 +8,12 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 
+import ch.ivyteam.ivy.designer.ui.view.IViewTechnologyDesignerUi;
+import ch.ivyteam.ivy.designer.ui.view.ViewTechnologyDesignerUiRegistry;
 import ch.ivyteam.ivy.dialog.configuration.DialogCreationParameters;
 import ch.ivyteam.ivy.dialog.configuration.IUserDialog;
 import ch.ivyteam.ivy.dialog.configuration.IUserDialogManager;
 import ch.ivyteam.ivy.dialog.configuration.jsf.JsfViewTechnologyConfiguration;
-import ch.ivyteam.ivy.dialog.ui.IViewTechnologyDesignerUi;
-import ch.ivyteam.ivy.dialog.ui.ViewTechnologyDesignerUiRegistry;
 import ch.ivyteam.ivy.process.model.diagram.Diagram;
 import ch.ivyteam.ivy.process.model.diagram.shape.DiagramShape;
 import ch.ivyteam.ivy.process.model.element.event.end.dialog.html.HtmlDialogEnd;
@@ -79,17 +79,23 @@ class DialogWriter {
             new Mapping("out.parallelIndex",
                     "ivy.task.customFields().numberField(\"parallelindex\").getOrDefault(0)"));
     List<Mapping> resultMappings = Arrays.asList(new Mapping("result.data", "in.processData"));
-    var ivyProject = IIvyProject.of(project).project();
-    IViewTechnologyDesignerUi viewTech = ViewTechnologyDesignerUiRegistry.getInstance()
-            .getViewTechnology(JsfViewTechnologyConfiguration.TECHNOLOGY_IDENTIFIER);
-    viewTech.getViewLayoutProvider().getViewLayouts(ivyProject).get(0)
-            .getViewContent(ExpressWorkflowConverter.NAMESPACE, "frame-10-full-width", null);
+    ensureLayoutInProject();
     DialogCreationParameters params = new DialogCreationParameters.Builder(project,
             ExpressWorkflowConverter.NAMESPACE + StringUtil.toJavaIdentifier(processName + "TaskDialog"))
                     .viewContent(template).dataClassFields(dlgDataFields).calleeParamMappings(paramMappings)
                     .calleeResultMappings(resultMappings).signature(dlgCallSigature)
                     .addCreationParameter(template, resultMappings).toCreationParams();
     IUserDialogManager.instance().getProjectDataModelFor(project).createProjectUserDialog(params);
+  }
+
+  private void ensureLayoutInProject() throws Exception {
+    var ivyProject = IIvyProject.of(project).project();
+    IViewTechnologyDesignerUi viewTech = ViewTechnologyDesignerUiRegistry
+            .getViewTechnology(JsfViewTechnologyConfiguration.TECHNOLOGY_IDENTIFIER);
+    if (viewTech instanceof ch.ivyteam.ivy.dialog.view.layout.ViewLayoutProvider layoutProvider) {
+      layoutProvider.getViewLayoutProvider().getViewLayouts(ivyProject).get(0)
+         .getViewContent(ExpressWorkflowConverter.NAMESPACE, "frame-10-full-width", null);
+    }
   }
 
   private void createFileUploadEventHandler(IUserDialog dialog) {
