@@ -1,11 +1,23 @@
 # Axon Ivy Express Importer
 
-Imports your no-code Express Workflow from the Portal into a Designer Workflow Application.
+Axon Ivy Express is a module of the Axon Ivy Portal. It enables you – as a business user – to create your own process applications and share them with your colleagues. These capabilities are also known as No-Code Application Platforms or Citizen Developer Platforms. Therefore, it is the perfect tool for you to digitize your processes and create standardization, reliability and traceability. Some of the key features of Axon Ivy Express are:
+
+* It is a **No Coding Toolset**, allowing business users without an IT background to create processes.
+
+* The **Axon Ivy Portal Integration** allows business users to implement processes without IT department involvement.
+
+* The **Seamless Integration** into Axon Ivy allows you to make use of standard features like email notifications, task delegation, etc.
+
+* The **Powerful Toolset** allows you to create processes, define different task types, set responsibilities and due dates and define user dialogs for each task.
+
+You can reach Axon Ivy Express by using the link Processes in the Axon Ivy Portal menu.
+
+You can find the full documentation [here](https://market.axonivy.com/market-cache/portal/portal-guide/11.3.1/doc/portal-user-guide/axon-ivy-express/index.html). 
 
 ## Demo
 
 1. Login to the Portal
-2. Export and download a low-code express Process of your choice as JSON. See [Portal docs](https://market.axonivy.com/portal/10.0.1.1/doc/portal-user-guide/axon-ivy-express/index.html#howto-export-an-express-process) on Express exporting.
+2. Export and download a low-code express Process of your choice as JSON. See [Portal docs](https://market.axonivy.com/market-cache/portal/portal-guide/11.3.1/doc/portal-user-guide/axon-ivy-express/index.html) on Express exporting.
 3. Open your Designer, got to `File` > `Import...` > `Axon Ivy` > `Ivy Express Workflow` ![wizard](img/express-import-wiz.png)
 4. Select the target project for the import. And use the previously download express workflow .json as source. ![sources](img/select-source-and-target.png)
 5. Finish the Wizard
