@@ -14,6 +14,8 @@ You can reach Axon Ivy Express by using the link Processes in the Axon Ivy Porta
 
 You can find the full documentation [here](https://market.axonivy.com/market-cache/portal/portal-guide/11.3.1/doc/portal-user-guide/axon-ivy-express/index.html). 
 
+**Use the express-importer** to import your no-code Express Workflow from the Portal into a designer Workflow Application.
+
 ## Demo
 
 1. Login to the Portal
