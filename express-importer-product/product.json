@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.axonivy.com/market/10.0.0/product.json",
-  "minimumIvyVersion": "11.3.0",
+  "minimumIvyVersion": "12.0.0",
   "installers": [
     {
       "id": "maven-dropins",
