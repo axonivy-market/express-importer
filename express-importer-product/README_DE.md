@@ -1,6 +1,6 @@
 # Axon Ivy Express Importer
 
-Axon Ivy Express ermöglicht es dir als Business Technologist, eigene Prozessanwendungen zu erstellen und mit deinen Kolleginnen und Kollegen zu teilen, indem es dir eine No-Code Application Platform bietet. Damit ist es das ideale Tool, um deine Prozesse zu digitalisieren und gleichzeitig Standardisierung, Nachvollziehbarkeit und Zuverlässigkeit zu schaffen.
+Axon Ivy Express ermöglicht es dir als Business Technologist, eigene Prozessanwendungen direkt im Portal zu erstellen und mit deinen Kolleginnen und Kollegen zu teilen. Damit ist es das ideale Tool, um deine Prozesse zu digitalisieren und gleichzeitig Standardisierung, Nachvollziehbarkeit und Zuverlässigkeit zu schaffen.
 
 Nutze den **Express-Importer**, um deinen No-Code-Express-Workflow aus dem Portal in den Axon Ivy Designer zu importieren.
 
