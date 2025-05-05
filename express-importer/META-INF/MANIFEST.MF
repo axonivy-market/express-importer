@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: express.importer
 Bundle-Name: Axon Ivy Express Importer
 Bundle-SymbolicName: express-importer;singleton:=true
-Bundle-Version: 12.0.1
+Bundle-Version: 12.0.2.qualifier
 Require-Bundle: ch.ivyteam.ivy.process.rdm,
  ch.ivyteam.ivy.designer.ide,
  ch.ivyteam.ivy.dialog.config,
