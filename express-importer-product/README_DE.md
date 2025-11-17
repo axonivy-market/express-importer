@@ -1,17 +1,48 @@
-# Axon Ivy Express Importer
+# #Axon Efeu Drückt aus Importeur
 
-Axon Ivy Express ermöglicht es dir als Business Technologist, eigene Prozessanwendungen direkt im Portal zu erstellen und mit deinen Kolleginnen und Kollegen zu teilen. Damit ist es das ideale Tool, um deine Prozesse zu digitalisieren und gleichzeitig Standardisierung, Nachvollziehbarkeit und Zuverlässigkeit zu schaffen.
+#Axon Efeu Drückt aus aktiviert du – da einem dienstlichen Nutzer – zu schaffen
+euren eigenen Arbeitsgang Anträge und teilen jene mit euren Kollegen. Diese
+Fähigkeiten sind auch da gekannt Nein-Code Antrag Bahnsteige oder Bürger
+Entwickler Bahnsteige. Deswegen, es ist als das perfekte Tool du zu
+digitalisieren eure Arbeitsgänge und schaffen #Einheitlichkeit, Beständigkeit
+und #Rückverfolgbarkeit. #Welche von den wesentlichen Charakterzügen von #Axon
+Efeu Drückt aus ist:
 
-Nutze den **Express-Importer**, um deinen No-Code-Express-Workflow aus dem Portal in den Axon Ivy Designer zu importieren.
+* Es ist ein **Kein Programmieren Toolset**, erlaubend dienstliche Nutzer ohne
+  einen IT Hintergrund zu schaffen Arbeitsgänge.
 
-Einige der wichtigsten Funktionen von Axon Ivy Express:
+* Das **#Axon Efeu Portal Integration** erlaubt dienstliche Nutzer zu
+  implementieren Arbeitsgänge ohne IT Abteilung Verwicklung.
 
-- **No-Coding-Toolset:** Du kannst Prozesse erstellen, ohne IT-Vorkenntnisse zu benötigen.  
-- **Axon Ivy Portal Integration:** Du entwickelst deine Prozesse direkt im Portal – ganz ohne Unterstützung der IT-Abteilung.  
-- **Integration in Axon Ivy:** Nutze Standardfunktionen wie E-Mail-Benachrichtigungen, Aufgabenweiterleitung usw.  
-- **Leistungsstarkes Toolset:** Erstelle Prozesse, definiere Aufgabentypen, Zuständigkeiten, Fälligkeiten oder Benutzer-Dialoge.  
+* Das **Nahtlose Integration** hinein #Axon #Ivy erlaubt du zu nützen von
+  tariflich Charakterzüge gleichnamig #Email Mitteilungen, Task Delegation,
+  #usw.
 
-Du nutzt Axon Ivy Express über den Menüpunkt **Prozesse** im Axon Ivy Portal.
+* Das **Kraftvoll Toolset** erlaubt du zu schaffen Arbeitsgänge, definiert
+  verschiedene Task Typen, Apparat Verantwortungen und fällige Daten und
+  definieren Nutzer Zwiegespräche für jeden Task.
 
-Die vollständige Dokumentation findest du [hier](https://developer.axonivy.com/doc/9/).
+Du können #Axon Efeu ankommen Drückt aus mal die Band Arbeitsgänge benutzen in
+den #Axon Efeu Portal Speisekarte.
 
+Du kannst die volle Dokumentation finden
+[hier](https://market.axonivy.com/axonivy-express).
+
+**Benutzt den #Express--Importeur** zu importieren eure nein-Code Drückt aus
+Workflow von dem Portal hinein einen Designer Workflow Antrag.
+
+## Demo
+
+1. Anmeldung zu dem Portal
+2. Ausfuhr und herunterladen eine #blöken-Code #Express- Arbeitsgang von eurer
+   Auswahl da JSON. Sieh [Demo
+   Deckel](https://market.axonivy.com/axonivy-express#tab-demo) auf #Express-
+   ausführend.
+3. Öffne euren Designer, bekommen zu `Datei` > `Einfuhr...` > `#Axon Efeu` >
+   `Efeu Drückt aus Workflow` ![Zauberer](img/express-import-wiz.png)
+4. Wähl aus das Soll Projekt für die Einfuhr. Und benutzen das vorher drückt aus
+   #Herunterladen workflow .json Wie Quelle.
+   ![Quellen](img/select-source-and-target.png)
+5. Beende den Zauberer
+6. Gerannt eure und erweitern euren #eingeführt Arbeitsgang
+   ![Zauberer](img/run-imported-process.png)
