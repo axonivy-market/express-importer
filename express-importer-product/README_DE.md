@@ -1,48 +1,51 @@
-# #Axon Efeu Drückt aus Importeur
+# Axon Ivy Express Importer
 
-#Axon Efeu Drückt aus aktiviert du – da einem dienstlichen Nutzer – zu schaffen
-euren eigenen Arbeitsgang Anträge und teilen jene mit euren Kollegen. Diese
-Fähigkeiten sind auch da gekannt Nein-Code Antrag Bahnsteige oder Bürger
-Entwickler Bahnsteige. Deswegen, es ist als das perfekte Tool du zu
-digitalisieren eure Arbeitsgänge und schaffen #Einheitlichkeit, Beständigkeit
-und #Rückverfolgbarkeit. #Welche von den wesentlichen Charakterzügen von #Axon
-Efeu Drückt aus ist:
+Mit Axon Ivy Express können Sie als Geschäftsanwender Ihre eigenen
+Prozessanwendungen erstellen und diese mit Ihren Kollegen teilen. Diese
+Funktionen werden auch als No-Code-Anwendungsplattformen oder Citizen
+Developer-Plattformen bezeichnet. Daher ist es das perfekte Tool für Sie, um
+Ihre Prozesse zu digitalisieren und Standardisierung, Zuverlässigkeit und
+Rückverfolgbarkeit zu schaffen. Einige der wichtigsten Funktionen von Axon Ivy
+Express sind:
 
-* Es ist ein **Kein Programmieren Toolset**, erlaubend dienstliche Nutzer ohne
-  einen IT Hintergrund zu schaffen Arbeitsgänge.
+* Es handelt sich um ein **No Coding Toolset**, mit dem Geschäftsanwender ohne
+  IT-Hintergrund Prozesse erstellen können.
 
-* Das **#Axon Efeu Portal Integration** erlaubt dienstliche Nutzer zu
-  implementieren Arbeitsgänge ohne IT Abteilung Verwicklung.
+* Die Axon Ivy Portal Integration **ermöglicht es Geschäftsanwendern, Prozesse
+  ohne Beteiligung der IT-Abteilung zu implementieren.**
 
-* Das **Nahtlose Integration** hinein #Axon #Ivy erlaubt du zu nützen von
-  tariflich Charakterzüge gleichnamig #Email Mitteilungen, Task Delegation,
-  #usw.
+* Die nahtlose Integration von **** in Axon Ivy ermöglicht Ihnen die Nutzung von
+  Standardfunktionen wie E-Mail-Benachrichtigungen, Aufgabenverteilung usw.
 
-* Das **Kraftvoll Toolset** erlaubt du zu schaffen Arbeitsgänge, definiert
-  verschiedene Task Typen, Apparat Verantwortungen und fällige Daten und
-  definieren Nutzer Zwiegespräche für jeden Task.
+* Das leistungsstarke Toolset „ **“** ermöglicht es Ihnen, Prozesse zu
+  erstellen, verschiedene Aufgabentypen zu definieren, Verantwortlichkeiten und
+  Fälligkeitstermine festzulegen und Benutzerdialoge für jede Aufgabe zu
+  definieren.
 
-Du können #Axon Efeu ankommen Drückt aus mal die Band Arbeitsgänge benutzen in
-den #Axon Efeu Portal Speisekarte.
+Sie können Axon Ivy Express über den Link „Prozesse” im Menü des Axon
+Ivy-Portals aufrufen.
 
-Du kannst die volle Dokumentation finden
+Die vollständige Dokumentation finden Sie
 [hier](https://market.axonivy.com/axonivy-express).
 
-**Benutzt den #Express--Importeur** zu importieren eure nein-Code Drückt aus
-Workflow von dem Portal hinein einen Designer Workflow Antrag.
+**Verwenden Sie den Express-Importer**, um Ihren No-Code-Express-Workflow aus
+dem Portal in eine Designer-Workflow-Anwendung zu importieren.
 
 ## Demo
 
-1. Anmeldung zu dem Portal
-2. Ausfuhr und herunterladen eine #blöken-Code #Express- Arbeitsgang von eurer
-   Auswahl da JSON. Sieh [Demo
-   Deckel](https://market.axonivy.com/axonivy-express#tab-demo) auf #Express-
-   ausführend.
-3. Öffne euren Designer, bekommen zu `Datei` > `Einfuhr...` > `#Axon Efeu` >
-   `Efeu Drückt aus Workflow` ![Zauberer](img/express-import-wiz.png)
-4. Wähl aus das Soll Projekt für die Einfuhr. Und benutzen das vorher drückt aus
-   #Herunterladen workflow .json Wie Quelle.
-   ![Quellen](img/select-source-and-target.png)
-5. Beende den Zauberer
-6. Gerannt eure und erweitern euren #eingeführt Arbeitsgang
-   ![Zauberer](img/run-imported-process.png)
+1. Melden Sie sich beim Portal an.
+2. Exportieren und laden Sie einen Low-Code-Express-Prozess Ihrer Wahl als JSON
+   herunter. Siehe
+   [Demo-Registerkarten](https://market.axonivy.com/axonivy-express#tab-demo)
+   zum Express-Export.
+3. Öffnen Sie Ihren Designer, gehen Sie zu „ `“ (Datei &gt; Markdown-Datei)
+   „File` “ (Datei > Markdown-Datei) > „ `“ (Importieren...) „` “
+   (Markdown-Datei) > „ `“ (Markdown-Datei) „Axon Ivy“ „` “ (Axon Ivy) > „ `“
+   (Markdown-Datei) „Ivy Express Workflow“ „` “ (Markdown-Datei)
+   ![wizard](img/express-import-wiz.png)
+4. Wählen Sie das Zielprojekt für den Import aus. Verwenden Sie die zuvor
+   heruntergeladene Express-Workflow-Datei .json als Quelle.
+   ![sources](img/select-source-and-target.png)
+5. Beenden Sie den Assistenten.
+6. Führen Sie Ihren importierten Prozess aus und erweitern Sie ihn!
+   [wizard](img/run-imported-process.png)
