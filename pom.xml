@@ -8,13 +8,13 @@
 
   <modules>
     <module>express-importer</module>
-    <!--<module>${project.name}-demo</module>
-    <module>${project.name}-test</module>-->
+    <!--<module>express-importer-demo</module>
+    <module>express-importer-test</module>-->
     <module>express-importer-product</module>
   </modules>
 
   <scm>
-    <developerConnection>scm:git:https://github.com/axonivy-market/${project.name}.git</developerConnection>
+    <developerConnection>scm:git:https://github.com/axonivy-market/express-importer.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
