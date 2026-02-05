@@ -15,4 +15,6 @@ jobs:
   build:
     uses: axonivy-market/github-workflows/.github/workflows/ci.yml@v6
     with:
+      cspellConfig: cspell.json
+    with:
       javaVersion: 21
